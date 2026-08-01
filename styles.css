@@ -1166,6 +1166,11 @@ picture{ display: contents; }
   flex-direction: column;
   gap: 10px;
 }
+.delivery-card input[type="radio"] {
+  width: auto;
+  margin-top: 4px;
+  accent-color: var(--cyan);
+}
 .delivery-card {
   display: flex;
   align-items: flex-start;
