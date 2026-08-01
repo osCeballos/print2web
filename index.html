@@ -468,30 +468,30 @@
 </footer>
 
 <!-- ===== MODAL INTERACTIVO ACCESIBLE (CHECKOUT MULTI-PASO A4) ===== -->
-<div id="modal" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+<div id="modal" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-detail-summary">
   <div class="modal-card modal-card-wide">
     <div class="modal-header">
-      <h3 id="modal-title">Finalizar Pedido — Print2Web A4</h3>
+      <h3 id="modal-title" tabindex="-1">Finalizar Pedido — Print2Web A4</h3>
       <button type="button" id="modal-close" class="modal-close-btn" aria-label="Cerrar ventana emergente">×</button>
     </div>
 
     <!-- Indicador de pasos del checkout -->
-    <div class="checkout-steps-bar" role="tablist" aria-label="Pasos del proceso de compra">
-      <div class="step-item active" id="step-tab-1">
+    <ol class="checkout-steps-bar" aria-label="Pasos del proceso de compra">
+      <li class="step-item active" id="step-tab-1" aria-current="step">
         <span class="step-num">1</span>
         <span class="step-label"><span class="step-text">Resumen A4</span><svg class="step-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
-      </div>
-      <div class="step-divider"></div>
-      <div class="step-item" id="step-tab-2">
+      </li>
+      <div class="step-divider" aria-hidden="true"></div>
+      <li class="step-item" id="step-tab-2">
         <span class="step-num">2</span>
         <span class="step-label"><span class="step-text">Datos & Entrega</span><svg class="step-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
-      </div>
-      <div class="step-divider"></div>
-      <div class="step-item" id="step-tab-3">
+      </li>
+      <div class="step-divider" aria-hidden="true"></div>
+      <li class="step-item" id="step-tab-3">
         <span class="step-num">3</span>
         <span class="step-label"><span class="step-text">Pago</span><svg class="step-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
-      </div>
-    </div>
+      </li>
+    </ol>
 
     <div class="modal-body">
       <!-- PASO 1: Resumen del Pedido -->
@@ -501,7 +501,7 @@
       </div>
 
       <!-- PASO 2: Datos de Contacto y Dirección de Entrega -->
-      <div id="checkout-step-2" class="checkout-step-panel" style="display: none;">
+      <div id="checkout-step-2" class="checkout-step-panel is-hidden">
         <h4 class="checkout-step-title">Datos de contacto y modalidad de entrega</h4>
         <form id="customer-info-form" class="checkout-form-grid" novalidate>
           <div class="form-group full-width">
@@ -555,7 +555,7 @@
       </div>
 
       <!-- PASO 3: Método de Pago -->
-      <div id="checkout-step-3" class="checkout-step-panel" style="display: none;">
+      <div id="checkout-step-3" class="checkout-step-panel is-hidden">
         <h4 class="checkout-step-title">Pago 100% Seguro</h4>
         <div class="payment-instruction" style="text-align: center; padding: 2rem 1rem;">
           <p style="font-size: 1.1rem; margin-bottom: 1rem;">Serás redirigido a la pasarela segura de Stripe para completar el pago.</p>
@@ -565,12 +565,12 @@
 
         <div class="final-total-banner">
           <span>Total final a pagar:</span>
-          <strong id="modal-checkout-total">0.00 €</strong>
+          <strong id="modal-checkout-total" aria-live="polite">0.00 €</strong>
         </div>
       </div>
 
       <!-- PASO 4: Confirmación y Recibo (Éxito) -->
-      <div id="checkout-step-4" class="checkout-step-panel" style="display: none;">
+      <div id="checkout-step-4" class="checkout-step-panel is-hidden">
         <div class="order-success-card">
           <div class="success-icon" aria-hidden="true">✓</div>
           <h3>¡Pedido confirmado y registrado!</h3>
@@ -591,9 +591,9 @@
     </div>
 
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline" id="modal-prev-btn" style="display: none;">Anterior</button>
+      <button type="button" class="btn btn-outline is-hidden" id="modal-prev-btn">Anterior</button>
       <button type="button" class="btn btn-solid" id="modal-next-btn">Continuar paso 2</button>
-      <button type="button" class="btn btn-solid" id="confirm-pay-btn" style="display: none;">Pagar y Finalizar Pedido</button>
+      <button type="button" class="btn btn-solid is-hidden" id="confirm-pay-btn">Pagar y Finalizar Pedido</button>
     </div>
   </div>
 </div>

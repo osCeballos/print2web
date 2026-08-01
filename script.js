@@ -411,47 +411,58 @@
         ocultarErrorModal();
 
         // Ocultar todos los paneles de pasos
-        if (checkoutStep1) checkoutStep1.style.display = 'none';
-        if (checkoutStep2) checkoutStep2.style.display = 'none';
-        if (checkoutStep3) checkoutStep3.style.display = 'none';
-        if (checkoutStep4) checkoutStep4.style.display = 'none';
+        if (checkoutStep1) checkoutStep1.classList.add('is-hidden');
+        if (checkoutStep2) checkoutStep2.classList.add('is-hidden');
+        if (checkoutStep3) checkoutStep3.classList.add('is-hidden');
+        if (checkoutStep4) checkoutStep4.classList.add('is-hidden');
 
         // Actualizar pestañas indicadoras
-        if (stepTab1) stepTab1.classList.toggle('active', paso === 1);
-        if (stepTab2) stepTab2.classList.toggle('active', paso === 2);
-        if (stepTab3) stepTab3.classList.toggle('active', paso === 3);
+        if (stepTab1) {
+            stepTab1.classList.toggle('active', paso === 1);
+            if (paso === 1) stepTab1.setAttribute('aria-current', 'step'); else stepTab1.removeAttribute('aria-current');
+        }
+        if (stepTab2) {
+            stepTab2.classList.toggle('active', paso === 2);
+            if (paso === 2) stepTab2.setAttribute('aria-current', 'step'); else stepTab2.removeAttribute('aria-current');
+        }
+        if (stepTab3) {
+            stepTab3.classList.toggle('active', paso === 3);
+            if (paso === 3) stepTab3.setAttribute('aria-current', 'step'); else stepTab3.removeAttribute('aria-current');
+        }
 
         // Actualizar visibilidad de botones
         if (paso === 1) {
-            if (checkoutStep1) checkoutStep1.style.display = 'block';
-            if (modalPrevBtn) modalPrevBtn.style.display = 'none';
+            if (checkoutStep1) checkoutStep1.classList.remove('is-hidden');
+            if (modalPrevBtn) modalPrevBtn.classList.add('is-hidden');
             if (modalNextBtn) {
-                modalNextBtn.style.display = 'inline-flex';
+                modalNextBtn.classList.remove('is-hidden');
                 modalNextBtn.textContent = 'Continuar a Datos & Entrega →';
             }
-            if (confirmPayBtn) confirmPayBtn.style.display = 'none';
+            if (confirmPayBtn) confirmPayBtn.classList.add('is-hidden');
             renderizarResumenPaso1();
         } else if (paso === 2) {
-            if (checkoutStep2) checkoutStep2.style.display = 'block';
-            if (modalPrevBtn) modalPrevBtn.style.display = 'inline-flex';
+            if (checkoutStep2) checkoutStep2.classList.remove('is-hidden');
+            if (modalPrevBtn) modalPrevBtn.classList.remove('is-hidden');
             if (modalNextBtn) {
-                modalNextBtn.style.display = 'inline-flex';
+                modalNextBtn.classList.remove('is-hidden');
                 modalNextBtn.textContent = 'Continuar al Pago →';
             }
-            if (confirmPayBtn) confirmPayBtn.style.display = 'none';
+            if (confirmPayBtn) confirmPayBtn.classList.add('is-hidden');
         } else if (paso === 3) {
-            if (checkoutStep3) checkoutStep3.style.display = 'block';
-            if (modalPrevBtn) modalPrevBtn.style.display = 'inline-flex';
-            if (modalNextBtn) modalNextBtn.style.display = 'none';
-            if (confirmPayBtn) confirmPayBtn.style.display = 'inline-flex';
+            if (checkoutStep3) checkoutStep3.classList.remove('is-hidden');
+            if (modalPrevBtn) modalPrevBtn.classList.remove('is-hidden');
+            if (modalNextBtn) modalNextBtn.classList.add('is-hidden');
+            if (confirmPayBtn) confirmPayBtn.classList.remove('is-hidden');
             actualizarTotal();
         } else if (paso === 4) {
             // Paso Éxito
-            if (checkoutStep4) checkoutStep4.style.display = 'block';
-            if (modalPrevBtn) modalPrevBtn.style.display = 'none';
-            if (modalNextBtn) modalNextBtn.style.display = 'none';
-            if (confirmPayBtn) confirmPayBtn.style.display = 'none';
+            if (checkoutStep4) checkoutStep4.classList.remove('is-hidden');
+            if (modalPrevBtn) modalPrevBtn.classList.add('is-hidden');
+            if (modalNextBtn) modalNextBtn.classList.add('is-hidden');
+            if (confirmPayBtn) confirmPayBtn.classList.add('is-hidden');
         }
+
+        trapFocus(modal);
     }
 
     function renderizarResumenPaso1() {
@@ -601,8 +612,8 @@
         confirmPayBtn.addEventListener('click', async function() {
             // El paso 3 ya no tiene campos locales que validar ya que usamos Stripe Checkout
             
-            const originalText = confirmPayBtn.textContent;
-            confirmPayBtn.textContent = 'Procesando pago seguro...';
+            const originalText = confirmPayBtn.innerHTML;
+            confirmPayBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px"><style>@keyframes modal-spin{100%{transform:rotate(360deg)}}.spin-grp{transform-origin:center;animation:modal-spin 1s linear infinite}</style><g class="spin-grp"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></g></svg> Procesando...';
             confirmPayBtn.disabled = true;
 
             try {
@@ -645,7 +656,7 @@
             } catch (error) {
                 console.error(error);
                 mostrarErrorModal('⚠️ Error: ' + error.message);
-                confirmPayBtn.textContent = originalText;
+                confirmPayBtn.innerHTML = originalText;
                 confirmPayBtn.disabled = false;
             }
         });
@@ -675,28 +686,38 @@
         if (!validarFormularioPrincipal()) return;
         if (!modal) return;
         modal.hidden = false;
+        // Forzar layout para desencadenar la animación
+        void modal.offsetWidth;
+        modal.classList.add('is-open');
         irAPasoModal(1);
-        if (modalClose) modalClose.focus();
-        trapFocus(modal);
+        const modalTitle = document.getElementById('modal-title');
+        if (modalTitle) modalTitle.focus();
     }
 
     function cerrarModal() {
         if (!modal) return;
-        modal.hidden = true;
-        releaseFocusTrap(modal);
-        if (comprarBtn) comprarBtn.focus();
+        modal.classList.remove('is-open');
+        setTimeout(() => {
+            modal.hidden = true;
+            releaseFocusTrap(modal);
+            if (comprarBtn) comprarBtn.focus();
+        }, 300); // 300ms debe coincidir con la transición en CSS
     }
 
     function trapFocus(element) {
-        const focusable = element.querySelectorAll(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        if (focusable.length === 0) return;
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
+        releaseFocusTrap(element);
 
         function handler(e) {
             if (e.key !== 'Tab') return;
+            
+            const focusable = Array.from(element.querySelectorAll(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            )).filter(el => el.offsetWidth > 0 || el.offsetHeight > 0);
+            
+            if (focusable.length === 0) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
             if (e.shiftKey) {
                 if (document.activeElement === first) {
                     e.preventDefault();
@@ -709,7 +730,6 @@
                 }
             }
         }
-        element.removeEventListener('keydown', handler);
         element.addEventListener('keydown', handler);
         element._focusTrapHandler = handler;
     }

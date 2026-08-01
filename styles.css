@@ -86,6 +86,10 @@ picture{ display: contents; }
   border: 0;
 }
 
+.is-hidden {
+  display: none !important;
+}
+
 :focus-visible {
   outline: 3px solid var(--cyan);
   outline-offset: 3px;
@@ -969,9 +973,16 @@ picture{ display: contents; }
   justify-content: center;
   z-index: 10000;
   padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.modal-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
 }
 .modal-overlay[hidden] {
-  display: none;
+  display: none !important;
 }
 
 .modal-card {
@@ -983,6 +994,18 @@ picture{ display: contents; }
   padding: 28px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.35);
   position: relative;
+  transform: translateY(20px) scale(0.98);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.modal-overlay.is-open .modal-card {
+  transform: translateY(0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay, .modal-card {
+    transition: none !important;
+    transform: none !important;
+  }
 }
 
 .modal-card-wide {
@@ -1013,7 +1036,12 @@ picture{ display: contents; }
   line-height: 1;
   color: var(--black);
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Pasos del Checkout */
