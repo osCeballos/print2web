@@ -1484,7 +1484,7 @@ picture{ display: contents; }
     padding: 24px 24px 70px;
     gap: 40px;
   }
-  .order-image{ order: 2; aspect-ratio: 16/10; }
+  .order-image{ order: 2; aspect-ratio: 4/5; }
   .order-container{ order: 1; }
 
   .testimonials { padding: 50px 24px 70px; }
