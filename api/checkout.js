@@ -32,7 +32,8 @@ function calcularTotal(campos) {
         costoEnvio = PRECIO_ENVIO;
     }
 
-    return Math.round((totalImprenta + costoEnvio) * 100) / 100;
+    let finalTotal = Math.round((totalImprenta + costoEnvio) * 100) / 100;
+    return Math.max(0.50, finalTotal);
 }
 
 async function handler(req, res) {
@@ -74,8 +75,10 @@ async function handler(req, res) {
 
             // 1. Subir a Vercel Blob
             const fileStream = fs.createReadStream(file.filepath);
-            const blobResult = await put(file.originalFilename, fileStream, {
+            const safeName = (file.originalFilename || 'documento.pdf').replace(/[^a-zA-Z0-9.\-_]/g, '_');
+            const blobResult = await put(safeName, fileStream, {
                 access: 'public',
+                addRandomSuffix: true,
                 token: process.env.BLOB_READ_WRITE_TOKEN
             });
 

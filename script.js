@@ -121,7 +121,8 @@
             costoEnvio = PRECIO_ENVIO;
         }
 
-        return Math.round((totalImprenta + costoEnvio) * 100) / 100;
+        let finalTotal = Math.round((totalImprenta + costoEnvio) * 100) / 100;
+        return Math.max(0.50, finalTotal);
     }
 
     function actualizarTotal() {
