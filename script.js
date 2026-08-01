@@ -465,16 +465,16 @@
         const fileName = (fileInput && fileInput.files && fileInput.files.length > 0) ? fileInput.files[0].name : 'Documento';
 
         modalDetailSummary.innerHTML = `
-            <p><strong>📄 Archivo adjunto:</strong> ${fileName}</p>
-            <p><strong>📐 Formato de papel:</strong> A4 Estándar (210 x 297 mm)</p>
-            <p><strong>📖 Páginas por ejemplar:</strong> ${numP} pág${numP > 1 ? 's' : ''}</p>
-            <p><strong>📚 Ejemplares (Copias):</strong> ${copias}</p>
-            <p><strong>🎨 Modo de color:</strong> ${color}</p>
-            <p><strong>🔄 Caras de impresión:</strong> ${diapo}</p>
-            <p><strong>🌀 Encuadernación espiral:</strong> ${enc}</p>
-            <p><strong>🚚 Opción de entrega actual:</strong> ${envText}</p>
-            <hr>
-            <p style="font-size: 1.1rem;"><strong>Total estimado:</strong> <span style="font-size: 1.25rem; font-weight: 800; color: var(--black);">${total.toFixed(2)} €</span></p>
+            <p><strong>Archivo adjunto:</strong> ${fileName}</p>
+            <p><strong>Formato de papel:</strong> A4 Estándar (210 x 297 mm)</p>
+            <p><strong>Páginas por ejemplar:</strong> ${numP} pág${numP > 1 ? 's' : ''}</p>
+            <p><strong>Ejemplares (Copias):</strong> ${copias}</p>
+            <p><strong>Modo de color:</strong> ${color}</p>
+            <p><strong>Caras de impresión:</strong> ${diapo}</p>
+            <p><strong>Encuadernación espiral:</strong> ${enc}</p>
+            <p><strong>Opción de entrega actual:</strong> ${envText}</p>
+            <hr style="border:none; border-top: 1px solid var(--gray-200); margin: 12px 0;">
+            <p style="font-size: 1.1rem; color: var(--cyan);"><strong>Total estimado:</strong> <span style="font-size: 1.25rem; font-weight: 800; color: var(--black);">${total.toFixed(2)} €</span></p>
         `;
     }
 

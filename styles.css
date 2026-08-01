@@ -1036,6 +1036,13 @@ picture{ display: contents; }
 .step-item.active {
   opacity: 1;
 }
+.step-item.active .step-num {
+  background: var(--cyan);
+  color: var(--black);
+}
+.step-item.active .step-label {
+  color: var(--cyan);
+}
 .step-num {
   width: 26px;
   height: 26px;
