@@ -986,16 +986,36 @@ picture{ display: contents; }
 }
 
 .modal-card {
-  background: var(--white);
-  color: var(--black);
-  border-radius: var(--radius);
+  background: #F2EDE4;
+  color: #1a1a1a;
+  border: 1px solid #d4d0c9;
+  border-radius: 4px;
   max-width: 480px;
   width: 100%;
   padding: 28px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.04),
+    0 8px 16px rgba(0,0,0,0.06),
+    0 24px 48px rgba(0,0,0,0.12);
   position: relative;
   transform: translateY(20px) scale(0.98);
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-family: 'Inter', sans-serif;
+}
+.modal-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(#d4d0c9 1px, transparent 1px);
+  background-size: 8px 8px;
+  opacity: 0.5;
+  z-index: 0;
+  border-radius: inherit;
+}
+.modal-header, .checkout-steps-bar, .modal-body, .modal-footer {
+  position: relative;
+  z-index: 1;
 }
 .modal-overlay.is-open .modal-card {
   transform: translateY(0) scale(1);
@@ -1022,12 +1042,14 @@ picture{ display: contents; }
   align-items: center;
   justify-content: space-between;
   margin-bottom: 16px;
-  border-bottom: 1px solid var(--gray-100);
+  border-bottom: 2px dashed #d4d0c9;
   padding-bottom: 12px;
 }
 .modal-header h3 {
-  font-size: 1.25rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
   font-weight: 800;
+  letter-spacing: -0.01em;
 }
 .modal-close-btn {
   background: none;
@@ -1051,7 +1073,7 @@ picture{ display: contents; }
   justify-content: space-between;
   margin-bottom: 20px;
   padding-bottom: 14px;
-  border-bottom: 1px solid var(--gray-200);
+  border-bottom: 2px dotted #d4d0c9;
 }
 
 .step-item {
@@ -1065,11 +1087,11 @@ picture{ display: contents; }
   opacity: 1;
 }
 .step-item.active .step-num {
-  background: var(--cyan);
-  color: var(--black);
+  background: #0099CC;
+  color: #ffffff;
 }
 .step-item.active .step-label {
-  color: var(--cyan);
+  color: #0099CC;
 }
 .step-num {
   width: 26px;
@@ -1097,22 +1119,24 @@ picture{ display: contents; }
 
 .step-divider {
   flex: 1;
-  height: 2px;
-  background: var(--gray-200);
+  height: 0;
+  border-top: 2px dotted #d4d0c9;
+  background: transparent;
   margin: 0 10px;
 }
 
 .checkout-step-title {
-  font-size: 1.05rem;
-  font-weight: 800;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
   margin-bottom: 16px;
-  color: var(--black);
+  color: #1a1a1a;
 }
 
 .checkout-summary-box {
-  background: var(--gray-50);
-  border: 1px solid var(--gray-200);
-  border-radius: 8px;
+  background: #FCFAF8;
+  border: 2px dashed #d4d0c9;
+  border-radius: 4px;
   padding: 18px;
   font-size: 0.92rem;
   line-height: 1.6;
@@ -1259,14 +1283,16 @@ picture{ display: contents; }
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  background: var(--black);
-  color: var(--white);
-  border-radius: 8px;
-  font-size: 1rem;
+  background: #1a1a1a;
+  color: #F2EDE4;
+  border-radius: 4px;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
   font-weight: 700;
 }
 .final-total-banner strong {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
+  color: #0099CC;
 }
 
 /* Éxito y Recibo */
@@ -1326,8 +1352,65 @@ picture{ display: contents; }
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  border-top: 1px solid var(--gray-100);
+  border-top: 2px dashed #d4d0c9;
   padding-top: 16px;
+}
+
+/* =========================================================
+   REDISEÑO: TEXTURAS, BOTONES Y FOCO (IDENTIDAD IMPRENTA)
+   ========================================================= */
+
+.modal-card .form-group input,
+.modal-card .delivery-card,
+.modal-card .payment-tab {
+  background: #FCFAF8;
+  border: 1px solid #d4d0c9;
+  border-radius: 4px;
+}
+.modal-card .delivery-card:has(input:checked) {
+  border-color: #0099CC;
+  background-color: #f0f9ff;
+}
+
+.modal-card .form-group input:focus-visible,
+.modal-card select:focus-visible,
+.modal-card button:focus-visible,
+.modal-card .delivery-card:has(input:focus-visible) {
+  outline: 2px solid #0099CC;
+  outline-offset: 2px;
+}
+
+.modal-card .btn-solid {
+  background: #0099CC;
+  color: #ffffff;
+  border-radius: 6px 12px 4px 8px;
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  font-weight: 700;
+  border: 1px solid #1a1a1a;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-shadow: 4px 4px 0px #D81B60;
+}
+.modal-card .btn-solid:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #D81B60;
+  background: #0088b3;
+}
+.modal-card .btn-solid:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #D81B60;
+}
+
+.modal-card .btn-outline {
+  background: transparent;
+  border: 2px dashed #d4d0c9;
+  color: #1a1a1a;
+  border-radius: 8px 4px 12px 6px;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.2s ease;
+}
+.modal-card .btn-outline:hover {
+  border-color: #1a1a1a;
 }
 
 /* =========================================================
