@@ -1,4 +1,4 @@
-(function() {
+﻿(function() {
     'use strict';
 
     // ----------------------------------------------------------------
@@ -845,7 +845,7 @@
     }
 
     // ----------------------------------------------------------------
-    // Bento Grid — duplicar tracks para bucle infinito vía JS
+    // Bento Grid - duplicar tracks para bucle infinito vía JS
     // ----------------------------------------------------------------
     document.querySelectorAll('.bento-track').forEach(function(track) {
         var clone = track.cloneNode(true);

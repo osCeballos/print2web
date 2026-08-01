@@ -1,5 +1,5 @@
-{
-  "name": "Print2Web — Impresión Online",
+﻿{
+  "name": "Print2Web - Impresión Online",
   "short_name": "Print2Web",
   "description": "Plataforma de impresión online de Tramas Solucions Gràfiques SL. Impresión digital de alta resolución (1800 dpi) con tintas ecológicas.",
   "start_url": "/",
@@ -28,7 +28,7 @@
       "src": "img/og-image.webp",
       "sizes": "1200x630",
       "type": "image/webp",
-      "label": "Print2Web — Impresión online de alta calidad"
+      "label": "Print2Web - Impresión online de alta calidad"
     }
   ],
   "categories": ["business", "shopping"],
