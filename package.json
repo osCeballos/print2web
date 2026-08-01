@@ -1,0 +1,19 @@
+{
+  "name": "print2web",
+  "version": "1.0.0",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@vercel/blob": "^2.6.1",
+    "cors": "^2.8.6",
+    "formidable": "^3.5.4",
+    "resend": "^6.18.1",
+    "stripe": "^22.4.0"
+  }
+}
