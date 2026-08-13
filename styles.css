@@ -1937,4 +1937,309 @@ picture{ display: contents; }
   100% { transform: rotate(360deg); }
 }
 
+/* ==========================================================================
+   ESTILOS PARA PÁGINAS LEGALES, FOOTER LEGAL Y BANNER DE COOKIES ACCESIBLE
+   ========================================================================== */
+
+/* Resaltado de campos pendientes de rellenar */
+.pending-field {
+  background-color: #fef08a;
+  color: #854d0e;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+/* Estilos de Páginas Legales */
+.legal-page-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 20px 80px 20px;
+}
+
+.legal-header {
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.breadcrumb {
+  font-size: 0.85rem;
+  color: var(--gray-600);
+  margin-bottom: 12px;
+}
+.breadcrumb a {
+  color: var(--cyan-dark, #0d9488);
+  text-decoration: underline;
+}
+
+.legal-header h1 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--black, #131313);
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.legal-subtitle {
+  font-size: 1.1rem;
+  color: var(--gray-600);
+}
+
+.legal-card {
+  background: var(--white, #ffffff);
+  border: 1px solid var(--gray-200, #e5e7eb);
+  border-radius: var(--radius-lg, 16px);
+  padding: 36px 40px;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+}
+
+.legal-section {
+  margin-bottom: 32px;
+}
+.legal-section:last-child {
+  margin-bottom: 0;
+}
+
+.legal-section h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--black, #131313);
+  margin-bottom: 14px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--gray-100, #f3f4f6);
+}
+
+.legal-section h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gray-800, #1f2937);
+  margin: 18px 0 8px 0;
+}
+
+.legal-section p, .legal-section ul, .legal-section ol {
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--gray-700, #374151);
+  margin-bottom: 14px;
+}
+
+.legal-section ul, .legal-section ol {
+  padding-left: 24px;
+}
+
+.legal-section li {
+  margin-bottom: 8px;
+}
+
+.legal-details-list {
+  list-style: none !important;
+  padding-left: 0 !important;
+  background: var(--gray-50, #f9fafb);
+  border: 1px solid var(--gray-200, #e5e7eb);
+  border-radius: 8px;
+  padding: 16px 20px !important;
+}
+
+.legal-warning-box {
+  background-color: #fffbe6;
+  border: 1px solid #ffe58f;
+  border-left: 5px solid #faad14;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.legal-footer-note {
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid var(--gray-200, #e5e7eb);
+  font-size: 0.85rem;
+  color: var(--gray-500, #6b7280);
+  text-align: right;
+}
+
+/* Tabla de Cookies Responsiva */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  margin: 16px 0;
+}
+
+.cookies-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.cookies-table th, .cookies-table td {
+  padding: 12px 14px;
+  border: 1px solid var(--gray-200, #e5e7eb);
+}
+
+.cookies-table th {
+  background-color: var(--gray-100, #f3f4f6);
+  font-weight: 700;
+  color: var(--black, #131313);
+}
+
+.cookies-table code {
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  color: #0f172a;
+}
+
+/* Estilos para el Footer Legal */
+.footer-legal-links {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: var(--gray-400, #9ca3af);
+}
+
+.footer-legal-links nav a {
+  color: var(--gray-300, #d1d5db);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-legal-links nav a:hover, .footer-legal-links nav a:focus-visible {
+  color: var(--cyan, #17b7e8);
+  text-decoration: underline;
+}
+
+/* Primera capa de protección de datos en formularios */
+.form-privacy-notice {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--gray-600, #4b5563);
+  background-color: var(--gray-50, #f9fafb);
+  border: 1px solid var(--gray-200, #e5e7eb);
+  border-left: 3px solid var(--cyan-dark, #0d9488);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+.form-privacy-notice a {
+  color: var(--cyan-dark, #0d9488);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+/* Banner de Cookies Accesible (role="region", non-blocking, visible focus) */
+.cookie-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9990;
+  background: rgba(19, 19, 19, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 16px 24px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.cookie-banner[hidden] {
+  display: none !important;
+}
+
+.cookie-banner-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.cookie-banner-text {
+  flex: 1 1 500px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #e5e7eb;
+}
+.cookie-banner-text p {
+  margin: 0;
+}
+.cookie-banner-text a {
+  color: var(--cyan, #17b7e8);
+  text-decoration: underline;
+  font-weight: 600;
+}
+.cookie-banner-text a:hover, .cookie-banner-text a:focus-visible {
+  color: #38bdf8;
+}
+
+.cookie-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-cookie-accept {
+  background-color: var(--cyan, #17b7e8);
+  color: #000000;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.88rem;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+.btn-cookie-accept:hover, .btn-cookie-accept:focus-visible {
+  background-color: #38bdf8;
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.btn-cookie-config {
+  background-color: transparent;
+  color: #d1d5db;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-decoration: none;
+  font-size: 0.88rem;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.btn-cookie-config:hover, .btn-cookie-config:focus-visible {
+  border-color: #ffffff;
+  color: #ffffff;
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .legal-card {
+    padding: 24px 18px;
+  }
+  .legal-header h1 {
+    font-size: 1.7rem;
+  }
+  .cookie-banner-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .cookie-banner-actions {
+    justify-content: flex-end;
+  }
+}
+
+
 

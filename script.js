@@ -550,6 +550,7 @@
             }
             if (confirmPayBtn) confirmPayBtn.classList.add('is-hidden');
         } else if (paso === 3) {
+            cargarStripeJsEnDemanda();
             if (checkoutStep3) checkoutStep3.classList.remove('is-hidden');
             if (modalPrevBtn) modalPrevBtn.classList.remove('is-hidden');
             if (modalNextBtn) modalNextBtn.classList.add('is-hidden');
@@ -1005,11 +1006,65 @@
         });
     }
 
+    // ----------------------------------------------------------------
+    // Carga diferida bajo demanda de Stripe.js (Garantía de 0 cookies no esenciales en carga inicial)
+    // ----------------------------------------------------------------
+    let stripeScriptCargado = false;
+    function cargarStripeJsEnDemanda() {
+        if (stripeScriptCargado || document.querySelector('script[src="https://js.stripe.com/v3/"]')) {
+            stripeScriptCargado = true;
+            return;
+        }
+        try {
+            const script = document.createElement('script');
+            script.src = 'https://js.stripe.com/v3/';
+            script.async = true;
+            script.onload = function() {
+                stripeScriptCargado = true;
+                console.log('Stripe.js cargado dinámicamente para el paso de pago seguro.');
+            };
+            document.head.appendChild(script);
+        } catch (e) {
+            console.warn('No se pudo cargar Stripe.js dinámicamente:', e);
+        }
+    }
+
+    // ----------------------------------------------------------------
+    // Inicialización del Banner de Cookies Accesible (role="region", no modal)
+    // ----------------------------------------------------------------
+    function inicializarBannerCookies() {
+        const cookieBanner = document.getElementById('cookie-banner');
+        const cookieAcceptBtn = document.getElementById('cookie-accept-btn');
+        if (!cookieBanner) return;
+
+        try {
+            const consent = localStorage.getItem('p2w_cookie_consent');
+            if (!consent) {
+                cookieBanner.hidden = false;
+            }
+        } catch (e) {
+            cookieBanner.hidden = false;
+        }
+
+        if (cookieAcceptBtn) {
+            cookieAcceptBtn.addEventListener('click', function() {
+                try {
+                    localStorage.setItem('p2w_cookie_consent', 'accepted');
+                } catch (e) {
+                    // Fallback silencioso
+                }
+                cookieBanner.hidden = true;
+                announceToScreenReader('Preferencia de aviso de cookies guardada.');
+            });
+        }
+    }
+
     // Inicializar estado por defecto
     actualizarTotal();
     actualizarOrientacionMockup();
     actualizarEncuadernadoMockup();
     actualizarModoColorMockup();
     actualizarPrevisualizacionMockup();
+    inicializarBannerCookies();
     if (modal) modal.hidden = true;
 })();
