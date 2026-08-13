@@ -319,10 +319,10 @@
                             viewport: viewport
                         };
                         page.render(renderContext).promise.then(function() {
-                            if (mockupPdfCanvas) mockupPdfCanvas.style.display = 'block';
-                            if (mockupPreviewImg) mockupPreviewImg.style.display = 'none';
-                            if (mockupPreviewPdf) mockupPreviewPdf.style.display = 'none';
-                            if (mockupPreviewDoc) mockupPreviewDoc.style.display = 'none';
+                            if (mockupPdfCanvas) { mockupPdfCanvas.hidden = false; mockupPdfCanvas.style.display = 'block'; }
+                            if (mockupPreviewImg) { mockupPreviewImg.hidden = true; mockupPreviewImg.style.display = 'none'; }
+                            if (mockupPreviewPdf) { mockupPreviewPdf.hidden = true; mockupPreviewPdf.style.display = 'none'; }
+                            if (mockupPreviewDoc) { mockupPreviewDoc.hidden = true; mockupPreviewDoc.style.display = 'none'; }
                         });
                     });
                 });
@@ -334,10 +334,11 @@
     }
 
     function mostrarTarjetaDocumento(fileName) {
-        if (mockupPdfCanvas) mockupPdfCanvas.style.display = 'none';
-        if (mockupPreviewImg) mockupPreviewImg.style.display = 'none';
-        if (mockupPreviewPdf) mockupPreviewPdf.style.display = 'none';
+        if (mockupPdfCanvas) { mockupPdfCanvas.hidden = true; mockupPdfCanvas.style.display = 'none'; }
+        if (mockupPreviewImg) { mockupPreviewImg.hidden = true; mockupPreviewImg.style.display = 'none'; }
+        if (mockupPreviewPdf) { mockupPreviewPdf.hidden = true; mockupPreviewPdf.style.display = 'none'; }
         if (mockupPreviewDoc) {
+            mockupPreviewDoc.hidden = false;
             mockupPreviewDoc.style.display = 'flex';
             if (mockupDocTitle) mockupDocTitle.textContent = fileName;
             actualizarPaginasBadgeMockup();
@@ -359,12 +360,12 @@
             actualizarOrientacionMockup();
             actualizarTotal();
             actualizarPaginasBadgeMockup();
-            if (mockupDefaultContent) mockupDefaultContent.style.display = 'block';
-            if (mockupPreviewContent) mockupPreviewContent.style.display = 'none';
-            if (mockupPreviewImg) mockupPreviewImg.style.display = 'none';
-            if (mockupPdfCanvas) mockupPdfCanvas.style.display = 'none';
-            if (mockupPreviewPdf) mockupPreviewPdf.style.display = 'none';
-            if (mockupPreviewDoc) mockupPreviewDoc.style.display = 'none';
+            if (mockupDefaultContent) { mockupDefaultContent.hidden = false; mockupDefaultContent.style.display = 'block'; }
+            if (mockupPreviewContent) { mockupPreviewContent.hidden = true; mockupPreviewContent.style.display = 'none'; }
+            if (mockupPreviewImg) { mockupPreviewImg.hidden = true; mockupPreviewImg.style.display = 'none'; }
+            if (mockupPdfCanvas) { mockupPdfCanvas.hidden = true; mockupPdfCanvas.style.display = 'none'; }
+            if (mockupPreviewPdf) { mockupPreviewPdf.hidden = true; mockupPreviewPdf.style.display = 'none'; }
+            if (mockupPreviewDoc) { mockupPreviewDoc.hidden = true; mockupPreviewDoc.style.display = 'none'; }
             return;
         }
 
@@ -373,8 +374,8 @@
         const fileType = file.type || '';
         const ext = fileName.split('.').pop().toLowerCase();
 
-        if (mockupDefaultContent) mockupDefaultContent.style.display = 'none';
-        if (mockupPreviewContent) mockupPreviewContent.style.display = 'flex';
+        if (mockupDefaultContent) { mockupDefaultContent.hidden = true; mockupDefaultContent.style.display = 'none'; }
+        if (mockupPreviewContent) { mockupPreviewContent.hidden = false; mockupPreviewContent.style.display = 'flex'; }
 
         if (fileType.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) {
             if (numPaginas) numPaginas.value = 1;
@@ -383,6 +384,7 @@
             currentObjectUrl = URL.createObjectURL(file);
             if (mockupPreviewImg) {
                 mockupPreviewImg.src = currentObjectUrl;
+                mockupPreviewImg.hidden = false;
                 mockupPreviewImg.style.display = 'block';
                 
                 const img = new Image();
@@ -392,9 +394,9 @@
                 };
                 img.src = currentObjectUrl;
             }
-            if (mockupPdfCanvas) mockupPdfCanvas.style.display = 'none';
-            if (mockupPreviewPdf) mockupPreviewPdf.style.display = 'none';
-            if (mockupPreviewDoc) mockupPreviewDoc.style.display = 'none';
+            if (mockupPdfCanvas) { mockupPdfCanvas.hidden = true; mockupPdfCanvas.style.display = 'none'; }
+            if (mockupPreviewPdf) { mockupPreviewPdf.hidden = true; mockupPreviewPdf.style.display = 'none'; }
+            if (mockupPreviewDoc) { mockupPreviewDoc.hidden = true; mockupPreviewDoc.style.display = 'none'; }
         } else if (fileType === 'application/pdf' || ext === 'pdf') {
             renderizarPagina1PDF(file);
         } else {
@@ -601,6 +603,27 @@
             }
         }
         return true;
+    }
+
+    // Avanzar y Retroceder en Modal
+    if (modalNextBtn) {
+        modalNextBtn.addEventListener('click', function() {
+            if (currentModalStep === 1) {
+                irAPasoModal(2);
+            } else if (currentModalStep === 2) {
+                if (validarPaso2()) {
+                    irAPasoModal(3);
+                }
+            }
+        });
+    }
+
+    if (modalPrevBtn) {
+        modalPrevBtn.addEventListener('click', function() {
+            if (currentModalStep > 1 && currentModalStep < 4) {
+                irAPasoModal(currentModalStep - 1);
+            }
+        });
     }
 
     // Finalización del Pedido y Redirección a Stripe Checkout
