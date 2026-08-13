@@ -33,43 +33,9 @@
 <meta name="twitter:image" content="https://tramasweb.com/img/og-image.webp">
 <meta name="twitter:image:alt" content="Print2Web - Impresión online de alta calidad">
 
-<!-- Datos Estructurados Schema.org -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "name": "Print2Web by Tramas Solucions Gràfiques SL",
-  "legalName": "Tramas Soluciones Gráficas SL",
-  "description": "Plataforma de impresión online de Tramas Solucions Gràfiques SL. Impresión digital de alta resolución (hasta 1800 dpi) con tintas ecológicas y taller propio.",
-  "url": "https://tramasweb.com/",
-  "telephone": "+34933722949",
-  "email": "info@tramasweb.com",
-  "foundingDate": "2008",
-  "image": "https://tramasweb.com/img/logotipo.webp",
-  "logo": "https://tramasweb.com/img/logotipo.webp",
-  "sameAs": ["https://tramasweb.com"],
-  "openingHours": ["Mo-Fr 09:00-18:00"],
-  "priceRange": "€€",
-  "currenciesAccepted": "EUR",
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.9",
-    "reviewCount": "54"
-  },
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "Carretera Reial, 15-17, Primer Local",
-    "addressLocality": "Sant Just Desvern",
-    "addressRegion": "Barcelona",
-    "postalCode": "08960",
-    "addressCountry": "ES"
-  }
-}
-</script>
 <!-- Estilos Principales -->
 <link rel="stylesheet" href="styles.css">
 
-<!-- GitHub Pages: sin servidor personalizable, seguridad eliminada para permitir llamadas a API -->
 <meta name="theme-color" content="#131313">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖨️</text></svg>">
 <link rel="apple-touch-icon" href="img/icon-192.webp">
@@ -234,11 +200,11 @@
           </div>
 
           <!-- Vista previa del Archivo subido (Imagen, Canvas 1ª Pág PDF o Documento) -->
-          <div class="mockup-preview-content" id="mockup-preview-content" style="display: none;">
-            <img id="mockup-preview-img" src="" alt="Vista previa de imagen subida" style="display: none;">
-            <canvas id="mockup-pdf-canvas" style="display: none;"></canvas>
-            <iframe id="mockup-preview-pdf" src="" class="mockup-pdf-frame" style="display: none;" title="Vista previa de documento PDF"></iframe>
-            <div id="mockup-preview-doc" class="doc-preview-box" style="display: none;">
+          <div class="mockup-preview-content" id="mockup-preview-content" hidden>
+            <img id="mockup-preview-img" src="" alt="Vista previa de imagen subida" hidden>
+            <canvas id="mockup-pdf-canvas" hidden></canvas>
+            <iframe id="mockup-preview-pdf" src="" class="mockup-pdf-frame" title="Vista previa de documento PDF" hidden></iframe>
+            <div id="mockup-preview-doc" class="doc-preview-box" hidden>
               <div class="doc-file-icon" aria-hidden="true">📄</div>
               <p id="mockup-doc-title" class="doc-file-title">documento.pdf</p>
               <div class="doc-fake-lines" aria-hidden="true">
@@ -255,6 +221,9 @@
       <h2>Impresión Online</h2>
 
       <form id="print-form" class="order-form" novalidate>
+        <!-- Campo Honeypot para detección y bloqueo de bots -->
+        <input type="text" id="website_hp" name="website_hp" tabindex="-1" autocomplete="off" aria-hidden="true" class="is-hidden-hp" hidden>
+
         
         <div class="form-row-inputs">
           <div class="form-group-field">
@@ -334,7 +303,7 @@
             <div>
               <h3>Sede Central & Taller (Tramas SL)</h3>
               <p>Carretera Reial, 15, 17, Primer Local<br>08960 Sant Just Desvern (Barcelona), España</p>
-              <a href="https://maps.google.com/maps?q=Carretera+Reial+15,+Sant+Just+Desvern" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin-top: 8px; font-size: 0.85rem; font-weight: 700; color: var(--cyan); text-decoration: none;">Ver en Google Maps →</a>
+              <a href="https://maps.google.com/maps?q=Carretera+Reial+15,+Sant+Just+Desvern" target="_blank" rel="noopener noreferrer" class="gmaps-link">Ver en Google Maps →</a>
             </div>
           </div>
 
@@ -554,10 +523,10 @@
       <!-- PASO 3: Método de Pago -->
       <div id="checkout-step-3" class="checkout-step-panel is-hidden">
         <h4 class="checkout-step-title">Pago 100% Seguro</h4>
-        <div class="payment-instruction" style="text-align: center; padding: 2rem 1rem;">
-          <p style="font-size: 1.1rem; margin-bottom: 1rem;">Serás redirigido a la pasarela segura de Stripe para completar el pago.</p>
-          <p style="color: #666;">Podrás pagar con Tarjeta Bancaria, Bizum, Apple Pay o Google Pay.</p>
-          <div style="font-size: 1.5rem; margin-top: 1rem; color: var(--cyan); font-weight: 800;">Pago Protegido por Stripe</div>
+        <div class="payment-instruction">
+          <p class="payment-instruction-main">Serás redirigido a la pasarela segura de Stripe para completar el pago.</p>
+          <p class="payment-instruction-sub">Podrás pagar con Tarjeta Bancaria, Bizum, Apple Pay o Google Pay.</p>
+          <div class="payment-badge-stripe">Pago Protegido por Stripe</div>
         </div>
 
         <div class="final-total-banner">

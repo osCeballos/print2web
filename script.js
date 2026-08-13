@@ -1,5 +1,71 @@
-﻿(function() {
+(function() {
     'use strict';
+
+    // Inyección dinámica de datos estructurados JSON-LD (Schema.org) para cumplir con CSP sin unsafe-inline
+    try {
+        const schemaScript = document.createElement('script');
+        schemaScript.type = 'application/ld+json';
+        schemaScript.textContent = JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "name": "Print2Web by Tramas Solucions Gràfiques SL",
+            "legalName": "Tramas Soluciones Gráficas SL",
+            "description": "Plataforma de impresión online de Tramas Solucions Gràfiques SL. Impresión digital de alta resolución (hasta 1800 dpi) con tintas ecológicas y taller propio.",
+            "url": "https://tramasweb.com/",
+            "telephone": "+34933722949",
+            "email": "info@tramasweb.com",
+            "foundingDate": "2008",
+            "image": "https://tramasweb.com/img/logotipo.webp",
+            "logo": "https://tramasweb.com/img/logotipo.webp",
+            "sameAs": ["https://tramasweb.com"],
+            "openingHours": ["Mo-Fr 09:00-18:00"],
+            "priceRange": "€€",
+            "currenciesAccepted": "EUR",
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "reviewCount": "54"
+            },
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Carretera Reial, 15-17, Primer Local",
+                "addressLocality": "Sant Just Desvern",
+                "addressRegion": "Barcelona",
+                "postalCode": "08960",
+                "addressCountry": "ES"
+            }
+        });
+        document.head.appendChild(schemaScript);
+    } catch (e) {
+        console.warn('Error al inyectar JSON-LD:', e);
+    }
+
+    let currentOrderId = null;
+
+    function obtenerOGenerarOrderId() {
+        try {
+            let orderId = sessionStorage.getItem('p2w_current_order_id');
+            if (!orderId) {
+                orderId = 'p2w_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+                sessionStorage.setItem('p2w_current_order_id', orderId);
+            }
+            return orderId;
+        } catch (e) {
+            if (!currentOrderId) {
+                currentOrderId = 'p2w_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+            }
+            return currentOrderId;
+        }
+    }
+
+    function resetearOrderId() {
+        currentOrderId = null;
+        try {
+            sessionStorage.removeItem('p2w_current_order_id');
+        } catch (e) {
+            // Fallback silencioso
+        }
+    }
 
     // ----------------------------------------------------------------
     // Referencias DOM principales del formulario de impresión
@@ -64,18 +130,9 @@
     const custCp = document.getElementById('cust-cp');
     const custCity = document.getElementById('cust-city');
 
-    // Métodos de Pago
-    const paymentTabs = document.querySelectorAll('.payment-tab');
-    const paymentDetailsBizum = document.getElementById('payment-details-bizum');
-    const paymentDetailsCard = document.getElementById('payment-details-card');
-    const paymentDetailsTienda = document.getElementById('payment-details-tienda');
-    const bizumPhone = document.getElementById('bizum-phone');
-    const cardNumber = document.getElementById('card-number');
-    const cardExpiry = document.getElementById('card-expiry');
-    const cardCvc = document.getElementById('card-cvc');
-
-    // Éxito y Recibo
+    // Métodos de Pago (Manejado 100% por pasarela segura Stripe Checkout)
     const orderCodeDisplay = document.getElementById('order-code-display');
+
     const orderReceiptSummary = document.getElementById('order-receipt-summary');
     const printReceiptBtn = document.getElementById('print-receipt-btn');
     const newOrderBtn = document.getElementById('new-order-btn');
@@ -506,18 +563,6 @@
     if (deliveryOptionEnvio) deliveryOptionEnvio.addEventListener('change', actualizarOpcionesEntregaUI);
     if (deliveryOptionRecogida) deliveryOptionRecogida.addEventListener('change', actualizarOpcionesEntregaUI);
 
-    // Selección de Métodos de Pago
-    paymentTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            paymentTabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            selectedPaymentMethod = this.getAttribute('data-method');
-
-            if (paymentDetailsBizum) paymentDetailsBizum.style.display = (selectedPaymentMethod === 'bizum') ? 'block' : 'none';
-            if (paymentDetailsCard) paymentDetailsCard.style.display = (selectedPaymentMethod === 'card') ? 'block' : 'none';
-            if (paymentDetailsTienda) paymentDetailsTienda.style.display = (selectedPaymentMethod === 'tienda') ? 'block' : 'none';
-        });
-    });
 
     // Validar Paso 2 (Datos de Cliente y Entrega)
     function validarPaso2() {
@@ -558,60 +603,9 @@
         return true;
     }
 
-    // Validar Paso 3 (Pago)
-    function validarPaso3() {
-        if (selectedPaymentMethod === 'bizum') {
-            if (!bizumPhone || !bizumPhone.value.trim() || bizumPhone.value.trim().length < 9) {
-                mostrarErrorModal('⚠️ Por favor, ingresa un número de teléfono válido para el pago con Bizum.');
-                if (bizumPhone) bizumPhone.focus();
-                return false;
-            }
-        } else if (selectedPaymentMethod === 'card') {
-            if (!cardNumber || !cardNumber.value.trim() || cardNumber.value.trim().length < 15) {
-                mostrarErrorModal('⚠️ Por favor, ingresa un número de tarjeta bancaria válido.');
-                if (cardNumber) cardNumber.focus();
-                return false;
-            }
-            if (!cardExpiry || !cardExpiry.value.trim()) {
-                mostrarErrorModal('⚠️ Por favor, ingresa la fecha de caducidad (MM/AA).');
-                if (cardExpiry) cardExpiry.focus();
-                return false;
-            }
-            if (!cardCvc || !cardCvc.value.trim() || cardCvc.value.trim().length < 3) {
-                mostrarErrorModal('⚠️ Por favor, ingresa el código CVC/CVV.');
-                if (cardCvc) cardCvc.focus();
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // Avanzar y Retroceder en Modal
-    if (modalNextBtn) {
-        modalNextBtn.addEventListener('click', function() {
-            if (currentModalStep === 1) {
-                irAPasoModal(2);
-            } else if (currentModalStep === 2) {
-                if (validarPaso2()) {
-                    irAPasoModal(3);
-                }
-            }
-        });
-    }
-
-    if (modalPrevBtn) {
-        modalPrevBtn.addEventListener('click', function() {
-            if (currentModalStep > 1 && currentModalStep < 4) {
-                irAPasoModal(currentModalStep - 1);
-            }
-        });
-    }
-
-    // Finalización del Pedido y Redirección a Stripe
+    // Finalización del Pedido y Redirección a Stripe Checkout
     if (confirmPayBtn) {
         confirmPayBtn.addEventListener('click', async function() {
-            // El paso 3 ya no tiene campos locales que validar ya que usamos Stripe Checkout
-            
             const originalText = confirmPayBtn.innerHTML;
             confirmPayBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px"><style>@keyframes modal-spin{100%{transform:rotate(360deg)}}.spin-grp{transform-origin:center;animation:modal-spin 1s linear infinite}</style><g class="spin-grp"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></g></svg> Procesando...';
             confirmPayBtn.disabled = true;
@@ -623,6 +617,13 @@
                 } else {
                     throw new Error("Falta el documento adjunto.");
                 }
+
+                const hpInput = document.getElementById('website_hp');
+                if (hpInput) {
+                    formData.append('website_hp', hpInput.value);
+                }
+
+                formData.append('orderId', obtenerOGenerarOrderId());
 
                 formData.append('numPaginas', numPaginas ? numPaginas.value : '1');
                 formData.append('numCopias', numCopias ? numCopias.value : '1');
@@ -673,6 +674,7 @@
     if (newOrderBtn) {
         newOrderBtn.addEventListener('click', function() {
             cerrarModal();
+            resetearOrderId();
             if (form) form.reset();
             if (fileInput) fileInput.value = '';
             actualizarNombreArchivo();

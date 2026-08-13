@@ -4,19 +4,14 @@
   <meta charset="UTF-8">
   <title>Pago Cancelado - Print2Web</title>
   <link rel="stylesheet" href="styles.css">
-  <style>
-    body { display: flex; align-items: center; justify-content: center; height: 100vh; background-color: var(--background); }
-    .status-card { background: var(--white); padding: 3rem; border-radius: var(--radius-lg); text-align: center; box-shadow: var(--shadow-md); max-width: 500px; }
-    .cancel-icon { font-size: 4rem; color: #ef4444; margin-bottom: 1rem; }
-  </style>
 </head>
-<body>
+<body class="status-page-body">
   <div class="status-card">
     <div class="cancel-icon">❌</div>
     <h2>Pago Cancelado</h2>
-    <p>Has cancelado el proceso de pago seguro o ha ocurrido un problema con la transacción.</p>
-    <p style="color: #666; margin-bottom: 2rem;">No se te ha cobrado nada. Puedes volver a intentarlo cuando quieras.</p>
-    <a href="index.html" class="btn btn-solid">Volver al formulario</a>
+    <p class="status-desc">Has cancelado el proceso de pago seguro o ha ocurrido un problema con la transacción.</p>
+    <p class="status-desc-sub">No se te ha cobrado nada. Puedes volver a intentarlo cuando quieras.</p>
+    <a href="index.html" class="btn-return">Volver al formulario</a>
   </div>
 </body>
 </html>

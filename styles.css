@@ -1,4 +1,4 @@
-﻿/* =========================================================
+/* =========================================================
    PRINT2WEB - estilos base
    ========================================================= */
 
@@ -1698,3 +1698,161 @@ picture{ display: contents; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ==========================================================================
+   ESTADOS DE PAGO: PÁGINAS DE ÉXITO Y CANCELACIÓN (CSP COMPLIANT)
+   ========================================================================== */
+.status-page-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--white, #ffffff);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.04) 1.2px, transparent 1.2px);
+  background-size: 16px 16px;
+  margin: 0;
+  font-family: var(--font, sans-serif);
+}
+
+.status-card {
+  background: var(--white, #ffffff);
+  padding: 3.5rem 3rem;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03);
+  max-width: 480px;
+  width: 90%;
+  position: relative;
+  overflow: hidden;
+  animation: statusSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.status-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #17b7e8, #e5007d, #ffed00);
+}
+
+@keyframes statusSlideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.success-svg-wrap {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 1.5rem;
+  border-radius: 50%;
+  background: rgba(23, 183, 232, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #17b7e8;
+}
+
+.success-svg {
+  width: 46px;
+  height: 46px;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: drawCheck 0.8s 0.2s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+@keyframes drawCheck {
+  to { stroke-dashoffset: 0; }
+}
+
+.status-card h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: #131313;
+  letter-spacing: -0.02em;
+}
+
+.status-desc {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #555555;
+  margin-bottom: 2rem;
+}
+
+.status-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f9fa;
+  padding: 10px 16px;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  color: #666666;
+  font-weight: 600;
+  margin-bottom: 2.5rem;
+}
+
+.btn-return {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  background: #131313;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-return:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.cancel-icon {
+  font-size: 4rem;
+  color: #ef4444;
+  margin-bottom: 1rem;
+}
+.status-desc-sub {
+  color: #666666;
+  margin-bottom: 2rem;
+}
+
+/* Clases auxiliares sin inline styles para index.html */
+.is-hidden-hp {
+  display: none !important;
+}
+
+.gmaps-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--cyan);
+  text-decoration: none;
+}
+
+.payment-instruction {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.payment-instruction-main {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.payment-instruction-sub {
+  color: #666;
+}
+
+.payment-badge-stripe {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  color: var(--cyan);
+  font-weight: 800;
+}
+
