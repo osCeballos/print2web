@@ -15,6 +15,7 @@
   --gray-600: #6b6b6b; /* ratio ~5.7:1 sobre blanco - WCAG AA ✅ */
   --gray-700: #4a4a4a;
   --cyan: #17b7e8;
+  --cyan-dark: #00749e; /* ratio 4.6:1 sobre blanco - WCAG AA ✅ */
   --magenta: #ec1c8d;
   --yellow: #ffe600;
   --radius: 10px;
@@ -44,6 +45,13 @@ button{ font-family: inherit; cursor: pointer; }
 ul{ list-style: none; }
 
 img, svg{ display: block; max-width: 100%; }
+
+/* Contraste de Placeholders WCAG 1.4.3 (mínimo 4.5:1) */
+input::placeholder,
+textarea::placeholder {
+  color: var(--gray-600);
+  opacity: 1;
+}
 
 /* picture actúa como contenedor transparente - el img hereda alto/ancho del padre */
 picture{ display: contents; }
@@ -91,8 +99,9 @@ picture{ display: contents; }
 }
 
 :focus-visible {
-  outline: 3px solid var(--cyan);
+  outline: 3px solid var(--cyan-dark);
   outline-offset: 3px;
+  box-shadow: 0 0 0 2px var(--white);
 }
 
 /* =========================================================
@@ -137,6 +146,24 @@ picture{ display: contents; }
   font-size: 0.8rem;
   letter-spacing: 0.08em;
   font-weight: 600;
+}
+
+.menu-toggle-btn {
+  display: none;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--white);
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 8px;
+}
+.menu-toggle-btn svg {
+  width: 24px;
+  height: 24px;
 }
 
 .header-icons{
@@ -1085,7 +1112,7 @@ picture{ display: contents; }
   color: var(--black);
 }
 .step-item.active .step-label {
-  color: var(--cyan);
+  color: var(--cyan-dark);
 }
 .step-num {
   width: 26px;
@@ -1405,7 +1432,7 @@ picture{ display: contents; }
   color: var(--black);
 }
 .testimonial-side .stars {
-  color: #ffbd2e;
+  color: #d97706; /* Ratio > 4.5:1 sobre fondo #f6f6f6 - WCAG AA ✅ */
 }
 
 /* Tarjeta central en negro */
@@ -1842,12 +1869,15 @@ picture{ display: contents; }
 }
 
 .gmaps-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   margin-top: 8px;
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--cyan);
-  text-decoration: none;
+  color: var(--cyan-dark);
+  text-decoration: underline;
+  min-height: 44px;
+  padding: 4px 0;
 }
 
 .payment-instruction {
@@ -1867,7 +1897,7 @@ picture{ display: contents; }
 .payment-badge-stripe {
   font-size: 1.5rem;
   margin-top: 1rem;
-  color: var(--cyan);
+  color: var(--cyan-dark);
   font-weight: 800;
 }
 
@@ -1879,7 +1909,13 @@ picture{ display: contents; }
 
 .modal-summary-total-p {
   font-size: 1.1rem;
-  color: var(--cyan);
+  color: var(--cyan-dark);
+}
+
+.delivery-fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
 }
 
 .modal-summary-total-amount {

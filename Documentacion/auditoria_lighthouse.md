@@ -1,5 +1,5 @@
 # 🔍 Auditoría Lighthouse — Print2Web
-**Fecha:** 2026-08-01 | **Auditor:** Antigravity Senior Web Auditor
+**Fecha:** 2026-08-01 | **Auditor:** Equipo Técnico Print2Web
 
 ---
 

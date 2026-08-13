@@ -1,6 +1,6 @@
 # Guía de Buenas Prácticas: Accesibilidad, Rendimiento y SEO
 
-**Proyecto:** SPECIMEN (TokenCraft)  
+**Proyecto:** Print2Web (Tramas Solucions Gràfiques SL)  
 **Stack:** Vanilla JS & CSS — Estética Brutalista  
 **Versión:** 1.0  
 

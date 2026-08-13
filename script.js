@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    // Inyección dinámica de datos estructurados JSON-LD (Schema.org) para cumplir con CSP sin unsafe-inline
+    // Inyección dinámica de datos estructurados JSON-LD (Schema.org)
     try {
         const schemaScript = document.createElement('script');
         schemaScript.type = 'application/ld+json';
@@ -10,7 +10,7 @@
             "@type": "LocalBusiness",
             "name": "Print2Web by Tramas Solucions Gràfiques SL",
             "legalName": "Tramas Soluciones Gráficas SL",
-            "description": "Plataforma de impresión online de Tramas Solucions Gràfiques SL. Impresión digital de alta resolución (hasta 1800 dpi) con tintas ecológicas y taller propio.",
+            "description": "Imprenta online de Tramas Solucions Gràfiques SL en Sant Just Desvern. Impresión digital profesional con taller propio desde 2008.",
             "url": "https://tramasweb.com/",
             "telephone": "+34933722949",
             "email": "info@tramasweb.com",
@@ -412,10 +412,34 @@
     // ----------------------------------------------------------------
     // Validación previa al pedido
     // ----------------------------------------------------------------
-    function mostrarErrorFormulario(mensaje) {
+    let lastFocusedElement = null;
+
+    function announceToScreenReader(message) {
+        const announcer = document.getElementById('a11y-announcer');
+        if (announcer) {
+            announcer.textContent = '';
+            setTimeout(() => {
+                announcer.textContent = message;
+            }, 50);
+        }
+    }
+
+    // ----------------------------------------------------------------
+    // Validación previa al pedido y gestión accesible de errores
+    // ----------------------------------------------------------------
+    function mostrarErrorFormulario(mensaje, targetInput) {
         if (!formErrorMsg) return;
         formErrorMsg.textContent = mensaje;
         formErrorMsg.hidden = false;
+        if (targetInput) {
+            ocultarErrorFormulario();
+            formErrorMsg.hidden = false;
+            formErrorMsg.textContent = mensaje;
+            targetInput.setAttribute('aria-invalid', 'true');
+            targetInput.setAttribute('aria-describedby', 'form-error-msg');
+            targetInput.focus();
+        }
+        announceToScreenReader(mensaje);
         formErrorMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
@@ -423,38 +447,56 @@
         if (!formErrorMsg) return;
         formErrorMsg.hidden = true;
         formErrorMsg.textContent = '';
+        if (form) {
+            form.querySelectorAll('[aria-invalid]').forEach(el => {
+                el.removeAttribute('aria-invalid');
+                el.removeAttribute('aria-describedby');
+            });
+        }
     }
 
-    function mostrarErrorModal(mensaje) {
+    function mostrarErrorModal(mensaje, targetInput) {
         if (!modalErrorBanner) return;
         modalErrorBanner.textContent = mensaje;
         modalErrorBanner.hidden = false;
+        if (targetInput) {
+            ocultarErrorModal();
+            modalErrorBanner.hidden = false;
+            modalErrorBanner.textContent = mensaje;
+            targetInput.setAttribute('aria-invalid', 'true');
+            targetInput.setAttribute('aria-describedby', 'modal-error-banner');
+            targetInput.focus();
+        }
+        announceToScreenReader(mensaje);
     }
 
     function ocultarErrorModal() {
         if (!modalErrorBanner) return;
         modalErrorBanner.hidden = true;
         modalErrorBanner.textContent = '';
+        if (modal) {
+            modal.querySelectorAll('[aria-invalid]').forEach(el => {
+                el.removeAttribute('aria-invalid');
+                el.removeAttribute('aria-describedby');
+            });
+        }
     }
 
     function validarFormularioPrincipal() {
         if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-            mostrarErrorFormulario('⚠️ Por favor, selecciona o arrastra tu archivo A4 antes de continuar.');
-            if (addFileBtn) addFileBtn.focus();
+            mostrarErrorFormulario('⚠️ Por favor, selecciona o arrastra tu archivo A4 antes de continuar.', addFileBtn);
             return false;
         }
 
         const numP = parseInt(numPaginas ? numPaginas.value : '1', 10);
         if (isNaN(numP) || numP < 1) {
-            mostrarErrorFormulario('⚠️ El número de páginas debe ser al menos 1.');
-            if (numPaginas) numPaginas.focus();
+            mostrarErrorFormulario('⚠️ El número de páginas debe ser al menos 1.', numPaginas);
             return false;
         }
 
         const numC = parseInt(numCopias ? numCopias.value : '1', 10);
         if (isNaN(numC) || numC < 1) {
-            mostrarErrorFormulario('⚠️ El número de copias debe ser al menos 1.');
-            if (numCopias) numCopias.focus();
+            mostrarErrorFormulario('⚠️ El número de copias debe ser al menos 1.', numCopias);
             return false;
         }
 
@@ -522,6 +564,12 @@
         }
 
         trapFocus(modal);
+
+        // Mover foco al encabezado del paso activo para navegación por teclado idónea (WCAG 2.4.3)
+        const activeStepTitle = document.getElementById(`step-title-${paso}`);
+        if (activeStepTitle) {
+            activeStepTitle.focus();
+        }
     }
 
     function renderizarResumenPaso1() {
@@ -569,36 +617,30 @@
     // Validar Paso 2 (Datos de Cliente y Entrega)
     function validarPaso2() {
         if (!custName || !custName.value.trim()) {
-            mostrarErrorModal('⚠️ Por favor, ingresa tu Nombre y Apellidos.');
-            if (custName) custName.focus();
+            mostrarErrorModal('⚠️ Por favor, ingresa tu Nombre y Apellidos.', custName);
             return false;
         }
         if (!custEmail || !custEmail.value.trim() || !custEmail.value.includes('@')) {
-            mostrarErrorModal('⚠️ Por favor, ingresa un correo electrónico válido.');
-            if (custEmail) custEmail.focus();
+            mostrarErrorModal('⚠️ Por favor, ingresa un correo electrónico válido.', custEmail);
             return false;
         }
         if (!custPhone || !custPhone.value.trim()) {
-            mostrarErrorModal('⚠️ Por favor, ingresa un número de teléfono de contacto.');
-            if (custPhone) custPhone.focus();
+            mostrarErrorModal('⚠️ Por favor, ingresa un número de teléfono de contacto.', custPhone);
             return false;
         }
 
         const esEnvio = deliveryOptionEnvio && deliveryOptionEnvio.checked;
         if (esEnvio) {
             if (!custAddress || !custAddress.value.trim()) {
-                mostrarErrorModal('⚠️ Por favor, ingresa tu dirección de envío.');
-                if (custAddress) custAddress.focus();
+                mostrarErrorModal('⚠️ Por favor, ingresa tu dirección de envío.', custAddress);
                 return false;
             }
             if (!custCp || !custCp.value.trim()) {
-                mostrarErrorModal('⚠️ Por favor, ingresa el código postal.');
-                if (custCp) custCp.focus();
+                mostrarErrorModal('⚠️ Por favor, ingresa el código postal.', custCp);
                 return false;
             }
             if (!custCity || !custCity.value.trim()) {
-                mostrarErrorModal('⚠️ Por favor, ingresa la ciudad / población.');
-                if (custCity) custCity.focus();
+                mostrarErrorModal('⚠️ Por favor, ingresa la ciudad / población.', custCity);
                 return false;
             }
         }
@@ -641,11 +683,11 @@
                     throw new Error("Falta el documento adjunto.");
                 }
 
-                // Vercel Serverless Functions limit payload to 4.5 MB
+                // Límite máximo de carga directa (4.4 MB)
                 const maxServerlessBytes = 4.4 * 1024 * 1024;
                 if (selectedFile.size > maxServerlessBytes) {
                     const mbSize = (selectedFile.size / (1024 * 1024)).toFixed(1);
-                    throw new Error(`El archivo adjunto (${mbSize} MB) supera el límite máximo de carga directa serverless (4.4 MB). Por favor comprime el documento PDF o contacta con el taller.`);
+                    throw new Error(`El archivo (${mbSize} MB) supera el tamaño máximo permitido para subir online (4.4 MB). Por favor comprime el documento o contacta con nosotros en el taller.`);
                 }
 
                 formData.append('documento', selectedFile);
@@ -730,6 +772,7 @@
 
     // Apertura y Cierre del Modal
     function abrirModal() {
+        lastFocusedElement = document.activeElement;
         if (!validarFormularioPrincipal()) return;
         if (!modal) return;
         modal.hidden = false;
@@ -747,7 +790,11 @@
         setTimeout(() => {
             modal.hidden = true;
             releaseFocusTrap(modal);
-            if (comprarBtn) comprarBtn.focus();
+            if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+                lastFocusedElement.focus();
+            } else if (comprarBtn) {
+                comprarBtn.focus();
+            }
         }, 300); // 300ms debe coincidir con la transición en CSS
     }
 
@@ -789,6 +836,25 @@
     }
 
     // ----------------------------------------------------------------
+    // Control del Menú Hamburguesa Móvil (WCAG 4.1.2)
+    // ----------------------------------------------------------------
+    const menuToggle = document.getElementById('menu-toggle');
+    const mainNav = document.getElementById('main-nav');
+
+    if (menuToggle && mainNav) {
+        menuToggle.addEventListener('click', function() {
+            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+            menuToggle.setAttribute('aria-expanded', !isExpanded);
+            mainNav.classList.toggle('is-open');
+            if (!isExpanded) {
+                announceToScreenReader('Menú de navegación abierto');
+            } else {
+                announceToScreenReader('Menú de navegación cerrado');
+            }
+        });
+    }
+
+    // ----------------------------------------------------------------
     // Asignación de Event Listeners
     // ----------------------------------------------------------------
     if (form) {
@@ -813,6 +879,9 @@
         fileInput.addEventListener('change', function() {
             actualizarPrevisualizacionMockup();
             ocultarErrorFormulario();
+            if (fileInput.files && fileInput.files.length > 0) {
+                announceToScreenReader(`Archivo ${fileInput.files[0].name} cargado correctamente.`);
+            }
         });
         fileInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
@@ -881,8 +950,27 @@
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            const contactName = document.getElementById('contact-name');
+            const contactEmail = document.getElementById('contact-email');
+            const contactMessage = document.getElementById('contact-message');
+
+            if (contactName && !contactName.value.trim()) {
+                mostrarErrorFormulario('⚠️ Por favor, ingresa tu nombre.', contactName);
+                return;
+            }
+            if (contactEmail && (!contactEmail.value.trim() || !contactEmail.value.includes('@'))) {
+                mostrarErrorFormulario('⚠️ Por favor, ingresa un correo electrónico válido.', contactEmail);
+                return;
+            }
+            if (contactMessage && !contactMessage.value.trim()) {
+                mostrarErrorFormulario('⚠️ Por favor, escribe tu consulta o mensaje.', contactMessage);
+                return;
+            }
+
+            ocultarErrorFormulario();
             if (contactFeedback) {
                 contactFeedback.hidden = false;
+                announceToScreenReader(contactFeedback.textContent);
                 contactForm.reset();
                 setTimeout(() => {
                     contactFeedback.hidden = true;
@@ -909,6 +997,13 @@
         });
         track.parentElement.appendChild(clone);
     });
+
+    // Desactivar reproducción de vídeo si la preferencia de movimiento reducido está activada (WCAG 2.2.2)
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.querySelectorAll('video.bento-video').forEach(function(vid) {
+            vid.pause();
+        });
+    }
 
     // Inicializar estado por defecto
     actualizarTotal();

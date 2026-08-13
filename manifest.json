@@ -1,7 +1,7 @@
 {
   "name": "Print2Web - Impresión Online",
   "short_name": "Print2Web",
-  "description": "Plataforma de impresión online de Tramas Solucions Gràfiques SL. Impresión digital de alta resolución (1800 dpi) con tintas ecológicas.",
+  "description": "Imprenta online de Tramas Solucions Gràfiques SL en Sant Just Desvern (Barcelona). Impresión digital profesional con taller propio desde 2008.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

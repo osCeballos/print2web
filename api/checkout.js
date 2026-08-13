@@ -53,7 +53,7 @@ function maskEmail(email) {
 }
 
 /**
- * Calcula el importe total del pedido en el servidor de forma 100% confiable.
+ * Calcula el importe total del pedido en el servidor.
  */
 function calcularTotal(campos) {
     const numP = Math.min(2000, Math.max(1, parseInt(campos.numPaginas || '1', 10) || 1));
@@ -77,7 +77,7 @@ function calcularTotal(campos) {
 }
 
 /**
- * Inspecciona Magic Bytes y firma binaria para verificar validez del archivo de forma nativa.
+ * Inspecciona los Magic Bytes y firma binaria para verificar la validez del archivo.
  */
 function validarMagicBytesYContenidoNativo(filepath, originalFilename) {
     const bufferHeader = Buffer.alloc(12);
@@ -114,7 +114,7 @@ function validarMagicBytesYContenidoNativo(filepath, originalFilename) {
 }
 
 /**
- * Sanitiza nombre de archivo para evitar Path Traversal y caracteres peligrosos.
+ * Sanitiza el nombre del archivo para evitar caracteres peligrosos.
  */
 function sanitizarNombreArchivo(nombreOriginal) {
     const parsed = path.parse(nombreOriginal || 'documento.pdf');

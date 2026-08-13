@@ -5,7 +5,7 @@ const { Redis } = require('@upstash/redis');
 const resend = new Resend(process.env.RESEND_API_KEY);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-// Inicializar cliente Upstash Redis para deduplicación de eventos
+// Inicializar cliente Redis para deduplicación
 let redis = null;
 if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
     try {
@@ -26,7 +26,7 @@ const config = {
 module.exports.config = config;
 
 /**
- * Captura el body crudo (raw Buffer) de la petición HTTP necesaria para verificar la firma cryptográfica de Stripe
+ * Captura el body crudo para verificar la firma de Stripe
  */
 const getRawBody = (req) => {
     return new Promise((resolve, reject) => {
@@ -38,7 +38,7 @@ const getRawBody = (req) => {
 };
 
 /**
- * Sanitiza valores de texto para evitar Inyección HTML en correos electrónicos
+ * Sanitiza valores de texto para evitar inyección HTML
  */
 function escapeHtml(str) {
     if (str === null || str === undefined) return '';
@@ -51,7 +51,7 @@ function escapeHtml(str) {
 }
 
 /**
- * Reintento con backoff exponencial para envío de email con Resend
+ * Envío de correo electrónico con reintentos
  */
 async function enviarEmailConReintentos(payload, maxRetries = 3) {
     let attempt = 0;
@@ -140,7 +140,7 @@ async function handler(req, res) {
             await enviarEmailConReintentos({
                 from: 'Print2Web Notificaciones <onboarding@resend.dev>',
                 to: adminEmail,
-                subject: `¡Nuevo Pedido Pagado! - ${safeName}`,
+                subject: `📦 Nuevo pedido online de ${safeName} (#${escapeHtml(metadata.orderId)})`,
                 html: `
                     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
                         <h1 style="color: #17b7e8;">Nuevo Pedido Confirmado ✅</h1>
@@ -167,7 +167,7 @@ async function handler(req, res) {
                         <p>Nombre original del archivo: <strong>${safeDocName}</strong></p>
                         <p style="margin-top: 15px;">
                             <a href="${safeDocUrl}" style="display:inline-block; padding:12px 24px; background-color:#131313; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:bold;">
-                                Descargar Documento (Vercel Blob Privado)
+                                Descargar Archivo Adjunto (Almacenamiento Seguro)
                             </a>
                         </p>
                         
