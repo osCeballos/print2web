@@ -1856,3 +1856,34 @@ picture{ display: contents; }
   font-weight: 800;
 }
 
+.modal-summary-hr {
+  border: none;
+  border-top: 1px solid var(--gray-200);
+  margin: 12px 0;
+}
+
+.modal-summary-total-p {
+  font-size: 1.1rem;
+  color: var(--cyan);
+}
+
+.modal-summary-total-amount {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--black);
+}
+
+.btn-spin-icon {
+  margin-right: 8px;
+}
+
+.spin-grp {
+  transform-origin: center;
+  animation: modal-spin 1s linear infinite;
+}
+
+@keyframes modal-spin {
+  100% { transform: rotate(360deg); }
+}
+
+

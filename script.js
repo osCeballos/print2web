@@ -544,8 +544,8 @@
             <p><strong>Caras de impresión:</strong> ${diapo}</p>
             <p><strong>Encuadernación espiral:</strong> ${enc}</p>
             <p><strong>Opción de entrega actual:</strong> ${envText}</p>
-            <hr style="border:none; border-top: 1px solid var(--gray-200); margin: 12px 0;">
-            <p style="font-size: 1.1rem; color: var(--cyan);"><strong>Total estimado:</strong> <span style="font-size: 1.25rem; font-weight: 800; color: var(--black);">${total.toFixed(2)} €</span></p>
+            <hr class="modal-summary-hr">
+            <p class="modal-summary-total-p"><strong>Total estimado:</strong> <span class="modal-summary-total-amount">${total.toFixed(2)} €</span></p>
         `;
     }
 
@@ -630,16 +630,25 @@
     if (confirmPayBtn) {
         confirmPayBtn.addEventListener('click', async function() {
             const originalText = confirmPayBtn.innerHTML;
-            confirmPayBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px"><style>@keyframes modal-spin{100%{transform:rotate(360deg)}}.spin-grp{transform-origin:center;animation:modal-spin 1s linear infinite}</style><g class="spin-grp"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></g></svg> Procesando...';
+            confirmPayBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-spin-icon"><g class="spin-grp"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></g></svg> Procesando...';
             confirmPayBtn.disabled = true;
 
             try {
                 const formData = new FormData();
-                if (fileInput && fileInput.files && fileInput.files.length > 0) {
-                    formData.append('documento', fileInput.files[0]);
-                } else {
+                const selectedFile = (fileInput && fileInput.files && fileInput.files.length > 0) ? fileInput.files[0] : null;
+
+                if (!selectedFile) {
                     throw new Error("Falta el documento adjunto.");
                 }
+
+                // Vercel Serverless Functions limit payload to 4.5 MB
+                const maxServerlessBytes = 4.4 * 1024 * 1024;
+                if (selectedFile.size > maxServerlessBytes) {
+                    const mbSize = (selectedFile.size / (1024 * 1024)).toFixed(1);
+                    throw new Error(`El archivo adjunto (${mbSize} MB) supera el límite máximo de carga directa serverless (4.4 MB). Por favor comprime el documento PDF o contacta con el taller.`);
+                }
+
+                formData.append('documento', selectedFile);
 
                 const hpInput = document.getElementById('website_hp');
                 if (hpInput) {
@@ -667,12 +676,25 @@
                     body: formData
                 });
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Error de comunicación con el servidor');
+                const responseText = await response.text();
+                let data = {};
+
+                try {
+                    data = JSON.parse(responseText);
+                } catch (parseErr) {
+                    if (response.status === 413) {
+                        throw new Error('El archivo adjunto supera el tamaño máximo permitido por el servidor serverless (4.5 MB).');
+                    }
+                    throw new Error(`Error en la respuesta del servidor (Estado ${response.status}).`);
                 }
 
-                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Error de comunicación con el servidor');
+                }
+
+                if (!data.url) {
+                    throw new Error('No se recibió la URL de redirección a la pasarela de pago.');
+                }
                 
                 // Redirigir a Stripe Checkout
                 window.location.href = data.url;
