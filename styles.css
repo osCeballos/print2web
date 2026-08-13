@@ -108,6 +108,21 @@ picture{ display: contents; }
   padding: 20px 40px;
 }
 
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--white);
+}
+
+.header-logo-img {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
 .logo{
   font-weight: 800;
   font-size: 1.15rem;
