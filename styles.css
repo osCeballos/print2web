@@ -2254,5 +2254,93 @@ picture{ display: contents; }
   }
 }
 
+/* ==========================================================================
+   PÁGINA DE ERROR 404 (DISEÑO MINIMALISTA Y LIMPIO)
+   ========================================================================== */
+
+.error-404-main {
+  min-height: calc(100vh - 220px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  background-color: var(--gray-50);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.04) 1.2px, transparent 1.2px);
+  background-size: 16px 16px;
+}
+
+.error-404-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 20px;
+  padding: 48px 36px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  max-width: 480px;
+  width: 100%;
+}
+
+.error-404-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--cyan) 0%, var(--cyan) 33%, var(--magenta) 33%, var(--magenta) 66%, var(--yellow) 66%, var(--yellow) 100%);
+}
+
+.error-404-code-graphic {
+  margin-bottom: 12px;
+}
+
+.error-404-num {
+  font-size: clamp(3.5rem, 8vw, 5rem);
+  font-weight: 900;
+  color: var(--black);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  display: block;
+}
+
+.error-404-card h1 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--black);
+  line-height: 1.3;
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.error-404-lead {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--gray-600);
+  margin-bottom: 28px;
+}
+
+.error-404-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.error-404-actions .btn-pill-solid {
+  padding: 14px 32px;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 600px) {
+  .error-404-card {
+    padding: 36px 24px;
+  }
+  .error-404-card h1 {
+    font-size: 1.3rem;
+  }
+}
+
+
+
 
 
