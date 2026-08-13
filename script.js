@@ -7,25 +7,19 @@
         schemaScript.type = 'application/ld+json';
         schemaScript.textContent = JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "LocalBusiness",
-            "name": "Print2Web by Tramas Solucions Gràfiques SL",
-            "legalName": "Tramas Soluciones Gráficas SL",
-            "description": "Imprenta online de Tramas Solucions Gràfiques SL en Sant Just Desvern. Impresión digital profesional con taller propio desde 2008.",
+            "@type": ["LocalBusiness", "PrintShop"],
+            "name": "Print2Web - Tramas Solucions Gràfiques SL",
+            "legalName": "Tramas Solucions Gràfiques SL",
+            "description": "Imprenta digital y copistería online con taller propio en Sant Just Desvern (Barcelona). Impresión de documentos A4, encuadernación, catálogos y gran formato desde 2008.",
             "url": "https://tramasweb.com/",
             "telephone": "+34933722949",
             "email": "info@tramasweb.com",
             "foundingDate": "2008",
-            "image": "https://tramasweb.com/img/logotipo.webp",
-            "logo": "https://tramasweb.com/img/logotipo.webp",
-            "sameAs": ["https://tramasweb.com"],
-            "openingHours": ["Mo-Fr 09:00-18:00"],
+            "image": "https://tramasweb.com/img/og-image.webp",
+            "logo": "https://tramasweb.com/img/logotipo.svg",
             "priceRange": "€€",
             "currenciesAccepted": "EUR",
-            "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "4.9",
-                "reviewCount": "54"
-            },
+            "paymentAccepted": ["Cash", "Credit Card", "Bizum", "Apple Pay", "Google Pay"],
             "address": {
                 "@type": "PostalAddress",
                 "streetAddress": "Carretera Reial, 15-17, Primer Local",
@@ -33,6 +27,47 @@
                 "addressRegion": "Barcelona",
                 "postalCode": "08960",
                 "addressCountry": "ES"
+            },
+            "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 41.3838,
+                "longitude": 2.0731
+            },
+            "hasMap": "https://maps.google.com/maps?q=Carretera+Reial+15,+Sant+Just+Desvern",
+            "areaServed": [
+                { "@type": "City", "name": "Sant Just Desvern" },
+                { "@type": "City", "name": "Barcelona" },
+                { "@type": "AdministrativeArea", "name": "Baix Llobregat" }
+            ],
+            "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Servicios de Imprenta Digital",
+                "itemListElement": [
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Impresión Digital A4 y Documentos",
+                            "description": "Impresión de documentos en A4 a color y blanco y negro con opción de encuadernación en espiral."
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Impresión de Catálogos y Revistas",
+                            "description": "Maquetación e impresión editorial de catálogos, revistas y dossiers corporativos."
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Gran Formato y Cartelería",
+                            "description": "Impresión de carteles, vinilos y lonas publicitarias para comercios y eventos."
+                        }
+                    }
+                ]
             }
         });
         document.head.appendChild(schemaScript);
