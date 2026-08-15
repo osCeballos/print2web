@@ -906,38 +906,48 @@
     // ----------------------------------------------------------------
     const ROUTES_CONFIG = {
         '/': {
+            id: 'inicio',
             sectionId: null,
-            title: 'Print2Web | Imprenta Digital Online en Sant Just Desvern (Barcelona)',
+            title: 'Print2Web - Impresión Online A4',
             description: 'Impresión digital rápida y profesional en Sant Just Desvern (Barcelona). Configura y encarga online tus impresiones A4, catálogos y dossieres con taller propio.',
             canonical: 'https://tramasweb.com/',
+            ogImage: 'https://tramasweb.com/img/og-image.webp',
             navKey: '/'
         },
         '/imprimir': {
+            id: 'imprimir',
             sectionId: 'imprimir',
-            title: 'Impresión Digital A4 Online | Print2Web',
+            title: 'Imprimir Online A4 | Print2Web',
             description: 'Configura y encarga online tus documentos A4 a color o blanco y negro con acabado profesional y opción de encuadernación en espiral en Print2Web.',
             canonical: 'https://tramasweb.com/imprimir',
+            ogImage: 'https://tramasweb.com/img/og-image.webp',
             navKey: '/imprimir'
         },
         '/contacto': {
+            id: 'contacto',
             sectionId: 'contacto',
-            title: 'Contacto y Taller en Sant Just Desvern | Print2Web',
+            title: 'Contacto y Taller en Sant Just | Print2Web',
             description: 'Visita nuestro taller de impresión en Ctra. Reial 15-17 (Sant Just Desvern) o contáctanos por teléfono y email para tus proyectos de artes gráficas.',
             canonical: 'https://tramasweb.com/contacto',
+            ogImage: 'https://tramasweb.com/img/og-image.webp',
             navKey: '/contacto'
         },
         '/opiniones': {
+            id: 'opiniones',
             sectionId: 'opiniones',
-            title: 'Opiniones y Valoraciones de Clientes | Print2Web',
+            title: 'Opiniones y Valoraciones | Print2Web',
             description: 'Descubre las opiniones de nuestros clientes sobre la calidad y rapidez de nuestros servicios de imprenta digital en Sant Just y Barcelona.',
             canonical: 'https://tramasweb.com/opiniones',
+            ogImage: 'https://tramasweb.com/img/og-image.webp',
             navKey: '/opiniones'
         },
         '/quienes-somos': {
+            id: 'quienes-somos',
             sectionId: 'quienes-somos',
-            title: 'Quiénes Somos | Tramas Solucions Gràfiques SL - Print2Web',
+            title: 'Quiénes Somos | Print2Web',
             description: 'Conoce más sobre Tramas Solucions Gràfiques SL, taller de imprenta y diseño gráfico en Sant Just Desvern ofreciendo servicios de impresión desde 2008.',
             canonical: 'https://tramasweb.com/quienes-somos',
+            ogImage: 'https://tramasweb.com/img/og-image.webp',
             navKey: '/quienes-somos'
         }
     };
@@ -994,15 +1004,22 @@
         const twDesc = document.querySelector('meta[name="twitter:description"]');
         if (twDesc && config.description) twDesc.setAttribute('content', config.description);
 
+        const twUrl = document.querySelector('meta[name="twitter:url"]');
+        if (twUrl && config.canonical) twUrl.setAttribute('content', config.canonical);
+
         actualizarEnlaceActivoNav(config.navKey);
     }
 
     function navegarARuta(ruta, opciones) {
         const opt = Object.assign({ pushState: true, smooth: true, focus: false }, opciones || {});
         const normalizada = normalizarRuta(ruta);
-        const config = ROUTES_CONFIG[normalizada];
+        let config = ROUTES_CONFIG[normalizada];
 
-        if (!config) return false;
+        // Manejo de rutas no definidas -> fallback seguro a inicio
+        if (!config) {
+            navegarARuta('/', { pushState: opt.pushState, smooth: false });
+            return false;
+        }
 
         if (opt.pushState && window.location.pathname !== normalizada) {
             try {
@@ -1017,7 +1034,7 @@
         if (config.sectionId) {
             const section = document.getElementById(config.sectionId);
             if (section) {
-                section.scrollIntoView({ behavior: opt.smooth ? 'smooth' : 'auto' });
+                section.scrollIntoView({ behavior: opt.smooth ? 'smooth' : 'auto', block: 'start' });
                 if (opt.focus || config.sectionId === 'imprimir') {
                     if (numPaginas) setTimeout(() => numPaginas.focus(), 350);
                 }
@@ -1027,6 +1044,10 @@
         }
 
         return true;
+    }
+
+    function navigate(route, addToHistory = true) {
+        return navegarARuta(route, { pushState: addToHistory, smooth: true });
     }
 
     function inicializarScrollSpy() {

@@ -46,19 +46,7 @@
   ],
   "rewrites": [
     {
-      "source": "/imprimir",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/contacto",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/opiniones",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/quienes-somos",
+      "source": "/(imprimir|contacto|opiniones|quienes-somos)",
       "destination": "/index.html"
     }
   ],
