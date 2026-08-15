@@ -882,11 +882,124 @@
             const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
             menuToggle.setAttribute('aria-expanded', !isExpanded);
             mainNav.classList.toggle('is-open');
+            if (siteHeader) siteHeader.classList.remove('header-hidden');
             if (!isExpanded) {
                 announceToScreenReader('Menú de navegación abierto');
             } else {
                 announceToScreenReader('Menú de navegación cerrado');
             }
+        });
+
+        // Cerrar menú móvil al pulsar un enlace de navegación interna
+        mainNav.querySelectorAll('a').forEach(function(navLink) {
+            navLink.addEventListener('click', function() {
+                if (window.innerWidth <= 1024 && menuToggle.getAttribute('aria-expanded') === 'true') {
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                    mainNav.classList.remove('is-open');
+                }
+            });
+        });
+    }
+
+    // ----------------------------------------------------------------
+    // Header Adaptativo Sticky con Ocultación Inteligente (Smart Hide/Show)
+    // ----------------------------------------------------------------
+    const siteHeader = document.querySelector('.site-header');
+    const skipLink = document.querySelector('.skip-link');
+    let lastScrollY = Math.max(0, window.pageYOffset || document.documentElement.scrollTop || 0);
+    const hideThreshold = 150;
+    const scrollDeltaThreshold = 6;
+    let scrollTicking = false;
+
+    function isHeaderExemptFromHiding() {
+        // 1. Si el menú móvil está desplegado
+        if (menuToggle && menuToggle.getAttribute('aria-expanded') === 'true') {
+            return true;
+        }
+        // 2. Si el foco activo está dentro del header (navegación por teclado / a11y)
+        if (siteHeader && siteHeader.contains(document.activeElement)) {
+            return true;
+        }
+        // 3. Si el modal de checkout está abierto
+        if (modal && !modal.hidden && modal.classList.contains('is-open')) {
+            return true;
+        }
+        // 4. Si el enlace de salto (skip-link) está enfocado
+        if (skipLink && document.activeElement === skipLink) {
+            return true;
+        }
+        return false;
+    }
+
+    function updateHeaderState() {
+        if (!siteHeader) {
+            scrollTicking = false;
+            return;
+        }
+
+        const currentScrollY = Math.max(0, window.pageYOffset || document.documentElement.scrollTop || 0);
+
+        // Sombra sutil al desplazarse de la parte superior
+        if (currentScrollY > 10) {
+            siteHeader.classList.add('is-scrolled');
+        } else {
+            siteHeader.classList.remove('is-scrolled');
+        }
+
+        // Si estamos cerca de la parte superior de la página, mostrar siempre
+        if (currentScrollY <= hideThreshold) {
+            siteHeader.classList.remove('header-hidden');
+            lastScrollY = currentScrollY;
+            scrollTicking = false;
+            return;
+        }
+
+        // Si hay una excepción activa (foco teclado, menú móvil abierto, modal), no ocultar
+        if (isHeaderExemptFromHiding()) {
+            siteHeader.classList.remove('header-hidden');
+            lastScrollY = currentScrollY;
+            scrollTicking = false;
+            return;
+        }
+
+        const diff = currentScrollY - lastScrollY;
+
+        // Scroll hacia abajo mayor que el umbral diferencial -> ocultar suavemente
+        if (diff > scrollDeltaThreshold && currentScrollY > hideThreshold) {
+            siteHeader.classList.add('header-hidden');
+        }
+        // Scroll hacia arriba mayor que el umbral diferencial -> mostrar inmediatamente
+        else if (diff < -scrollDeltaThreshold) {
+            siteHeader.classList.remove('header-hidden');
+        }
+
+        lastScrollY = currentScrollY;
+        scrollTicking = false;
+    }
+
+    function onScroll() {
+        if (!scrollTicking) {
+            window.requestAnimationFrame(updateHeaderState);
+            scrollTicking = true;
+        }
+    }
+
+    // Escucha pasiva para máximo rendimiento de scroll a 60/120fps
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Accesibilidad por teclado (WCAG 2.2 Focus Visible & Operable)
+    if (siteHeader) {
+        siteHeader.addEventListener('focusin', function() {
+            siteHeader.classList.remove('header-hidden');
+        });
+    }
+
+    if (skipLink) {
+        skipLink.addEventListener('focus', function() {
+            if (siteHeader) siteHeader.classList.remove('header-hidden');
+        });
+        skipLink.addEventListener('click', function() {
+            if (siteHeader) siteHeader.classList.remove('header-hidden');
         });
     }
 
@@ -1101,5 +1214,6 @@
     actualizarModoColorMockup();
     actualizarPrevisualizacionMockup();
     inicializarBannerCookies();
+    updateHeaderState();
     if (modal) modal.hidden = true;
 })();
