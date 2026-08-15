@@ -166,6 +166,32 @@ picture{ display: contents; }
   font-weight: 600;
 }
 
+.main-nav a {
+  position: relative;
+  color: var(--white);
+  transition: color 0.2s ease;
+  padding: 4px 0;
+  display: inline-block;
+}
+
+.main-nav a:hover,
+.main-nav a.active,
+.main-nav a[aria-current="page"] {
+  color: var(--cyan);
+}
+
+.main-nav a.active::after,
+.main-nav a[aria-current="page"]::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--cyan);
+  border-radius: 1px;
+}
+
 .menu-toggle-btn {
   display: none;
   background: none;

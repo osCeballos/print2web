@@ -902,6 +902,264 @@
     }
 
     // ----------------------------------------------------------------
+    // Enrutador SPA con History API (URLs limpias sin recarga de página)
+    // ----------------------------------------------------------------
+    const ROUTES_CONFIG = {
+        '/': {
+            sectionId: null,
+            title: 'Print2Web | Imprenta Digital Online en Sant Just Desvern (Barcelona)',
+            description: 'Impresión digital rápida y profesional en Sant Just Desvern (Barcelona). Configura y encarga online tus impresiones A4, catálogos y dossieres con taller propio.',
+            canonical: 'https://tramasweb.com/',
+            navKey: '/'
+        },
+        '/imprimir': {
+            sectionId: 'imprimir',
+            title: 'Impresión Digital A4 Online | Print2Web',
+            description: 'Configura y encarga online tus documentos A4 a color o blanco y negro con acabado profesional y opción de encuadernación en espiral en Print2Web.',
+            canonical: 'https://tramasweb.com/imprimir',
+            navKey: '/imprimir'
+        },
+        '/contacto': {
+            sectionId: 'contacto',
+            title: 'Contacto y Taller en Sant Just Desvern | Print2Web',
+            description: 'Visita nuestro taller de impresión en Ctra. Reial 15-17 (Sant Just Desvern) o contáctanos por teléfono y email para tus proyectos de artes gráficas.',
+            canonical: 'https://tramasweb.com/contacto',
+            navKey: '/contacto'
+        },
+        '/opiniones': {
+            sectionId: 'opiniones',
+            title: 'Opiniones y Valoraciones de Clientes | Print2Web',
+            description: 'Descubre las opiniones de nuestros clientes sobre la calidad y rapidez de nuestros servicios de imprenta digital en Sant Just y Barcelona.',
+            canonical: 'https://tramasweb.com/opiniones',
+            navKey: '/opiniones'
+        },
+        '/quienes-somos': {
+            sectionId: 'quienes-somos',
+            title: 'Quiénes Somos | Tramas Solucions Gràfiques SL - Print2Web',
+            description: 'Conoce más sobre Tramas Solucions Gràfiques SL, taller de imprenta y diseño gráfico en Sant Just Desvern ofreciendo servicios de impresión desde 2008.',
+            canonical: 'https://tramasweb.com/quienes-somos',
+            navKey: '/quienes-somos'
+        }
+    };
+
+    function normalizarRuta(pathname) {
+        if (!pathname || pathname === '' || pathname === '/index.html') return '/';
+        const sinSlashFinal = pathname.replace(/\/+$/, '');
+        return sinSlashFinal === '' ? '/' : sinSlashFinal;
+    }
+
+    function actualizarEnlaceActivoNav(navKey) {
+        const mainNavLinks = document.querySelectorAll('.main-nav a');
+        mainNavLinks.forEach(function(link) {
+            const href = link.getAttribute('href');
+            if (href === navKey || (navKey === '/' && (href === '/' || href === '#main-content'))) {
+                link.setAttribute('aria-current', 'page');
+                link.classList.add('active');
+            } else {
+                link.removeAttribute('aria-current');
+                link.classList.remove('active');
+            }
+        });
+    }
+
+    function actualizarMetadatosYRuta(ruta, config) {
+        if (!config) return;
+
+        if (config.title) {
+            document.title = config.title;
+        }
+
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc && config.description) {
+            metaDesc.setAttribute('content', config.description);
+        }
+
+        const canonicalLink = document.querySelector('link[rel="canonical"]');
+        if (canonicalLink && config.canonical) {
+            canonicalLink.setAttribute('href', config.canonical);
+        }
+
+        const ogUrl = document.querySelector('meta[property="og:url"]');
+        if (ogUrl && config.canonical) ogUrl.setAttribute('content', config.canonical);
+
+        const ogTitle = document.querySelector('meta[property="og:title"]');
+        if (ogTitle && config.title) ogTitle.setAttribute('content', config.title);
+
+        const ogDesc = document.querySelector('meta[property="og:description"]');
+        if (ogDesc && config.description) ogDesc.setAttribute('content', config.description);
+
+        const twTitle = document.querySelector('meta[name="twitter:title"]');
+        if (twTitle && config.title) twTitle.setAttribute('content', config.title);
+
+        const twDesc = document.querySelector('meta[name="twitter:description"]');
+        if (twDesc && config.description) twDesc.setAttribute('content', config.description);
+
+        actualizarEnlaceActivoNav(config.navKey);
+    }
+
+    function navegarARuta(ruta, opciones) {
+        const opt = Object.assign({ pushState: true, smooth: true, focus: false }, opciones || {});
+        const normalizada = normalizarRuta(ruta);
+        const config = ROUTES_CONFIG[normalizada];
+
+        if (!config) return false;
+
+        if (opt.pushState && window.location.pathname !== normalizada) {
+            try {
+                history.pushState({ route: normalizada }, config.title, normalizada);
+            } catch (e) {
+                // Fallback en entornos restringidos
+            }
+        }
+
+        actualizarMetadatosYRuta(normalizada, config);
+
+        if (config.sectionId) {
+            const section = document.getElementById(config.sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: opt.smooth ? 'smooth' : 'auto' });
+                if (opt.focus || config.sectionId === 'imprimir') {
+                    if (numPaginas) setTimeout(() => numPaginas.focus(), 350);
+                }
+            }
+        } else {
+            window.scrollTo({ top: 0, behavior: opt.smooth ? 'smooth' : 'auto' });
+        }
+
+        return true;
+    }
+
+    function inicializarScrollSpy() {
+        if (!('IntersectionObserver' in window)) return;
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '-20% 0px -60% 0px',
+            threshold: 0
+        };
+
+        const sectionMap = {
+            'imprimir': '/imprimir',
+            'contacto': '/contacto',
+            'opiniones': '/opiniones',
+            'quienes-somos': '/quienes-somos'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    const route = sectionMap[id];
+                    if (route && ROUTES_CONFIG[route]) {
+                        actualizarEnlaceActivoNav(route);
+                    }
+                }
+            });
+        }, observerOptions);
+
+        Object.keys(sectionMap).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) observer.observe(el);
+        });
+
+        const heroEl = document.querySelector('.hero');
+        if (heroEl) {
+            const heroObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        actualizarEnlaceActivoNav('/');
+                    }
+                });
+            }, observerOptions);
+            heroObserver.observe(heroEl);
+        }
+    }
+
+    function inicializarEnrutadorSPA() {
+        // 1. Retrocompatibilidad con hash antiguo (/#imprimir, #contacto, etc.)
+        const hash = window.location.hash;
+        const hashToRoute = {
+            '#imprimir': '/imprimir',
+            '#contacto': '/contacto',
+            '#opiniones': '/opiniones',
+            '#quienes-somos': '/quienes-somos',
+            '#main-content': '/'
+        };
+
+        if (hash && hashToRoute[hash]) {
+            const rutaLimpia = hashToRoute[hash];
+            const cfg = ROUTES_CONFIG[rutaLimpia];
+            if (cfg) {
+                try {
+                    history.replaceState({ route: rutaLimpia }, cfg.title, rutaLimpia);
+                } catch (e) {}
+                setTimeout(() => {
+                    navegarARuta(rutaLimpia, { pushState: false, smooth: true });
+                }, 100);
+            }
+        } else {
+            // 2. Comprobar ruta directa en pathname (ej. /imprimir, /contacto)
+            const rutaActual = normalizarRuta(window.location.pathname);
+            if (ROUTES_CONFIG[rutaActual]) {
+                actualizarMetadatosYRuta(rutaActual, ROUTES_CONFIG[rutaActual]);
+                if (rutaActual !== '/') {
+                    setTimeout(() => {
+                        navegarARuta(rutaActual, { pushState: false, smooth: false });
+                    }, 100);
+                }
+            }
+        }
+
+        // 3. Manejo de navegación hacia atrás / adelante (evento popstate)
+        window.addEventListener('popstate', function() {
+            const ruta = normalizarRuta(window.location.pathname);
+            if (ROUTES_CONFIG[ruta]) {
+                navegarARuta(ruta, { pushState: false, smooth: true });
+            }
+        });
+
+        // 4. Interceptación global de clics en enlaces SPA
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a');
+            if (!link) return;
+
+            const href = link.getAttribute('href');
+            if (!href) return;
+
+            // Ignorar enlaces externos, mailto, tel o target blank
+            if (
+                href.startsWith('mailto:') ||
+                href.startsWith('tel:') ||
+                href.startsWith('http://') ||
+                href.startsWith('https://') && !href.startsWith(window.location.origin) ||
+                link.getAttribute('target') === '_blank' ||
+                link.classList.contains('skip-link')
+            ) {
+                return;
+            }
+
+            let path = href;
+            if (path.startsWith(window.location.origin)) {
+                path = path.slice(window.location.origin.length);
+            }
+
+            const rutaNormalizada = normalizarRuta(path);
+            if (ROUTES_CONFIG[rutaNormalizada]) {
+                e.preventDefault();
+                navegarARuta(rutaNormalizada, { pushState: true, smooth: true, focus: link.id === 'header-cta' });
+
+                // Cerrar menú móvil si está abierto
+                if (menuToggle && mainNav && window.innerWidth <= 1024 && menuToggle.getAttribute('aria-expanded') === 'true') {
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                    mainNav.classList.remove('is-open');
+                }
+            }
+        });
+
+        inicializarScrollSpy();
+    }
+
+    // ----------------------------------------------------------------
     // Header Adaptativo Sticky con Ocultación Inteligente (Smart Hide/Show)
     // ----------------------------------------------------------------
     const siteHeader = document.querySelector('.site-header');
@@ -1215,5 +1473,6 @@
     actualizarPrevisualizacionMockup();
     inicializarBannerCookies();
     updateHeaderState();
+    inicializarEnrutadorSPA();
     if (modal) modal.hidden = true;
 })();
