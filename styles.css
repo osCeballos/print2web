@@ -1498,10 +1498,6 @@ picture{ display: contents; }
 .site-footer{
   background: var(--near-black);
   color: var(--white);
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  align-items: end;
-  gap: 30px;
   padding: 60px 40px 30px;
 }
 
@@ -1516,7 +1512,7 @@ picture{ display: contents; }
   font-size: .9rem;
   line-height: 1.6;
   margin-bottom: 28px;
-  max-width: 40ch;
+  max-width: 65ch;
 }
 
 .footer-social{
@@ -1536,17 +1532,6 @@ picture{ display: contents; }
   background: rgba(255,255,255,.2);
 }
 .footer-social svg{ width: 18px; height: 18px; color: var(--white); }
-
-.footer-media{
-  display: flex;
-  gap: 18px;
-  justify-content: flex-end;
-}
-.footer-swatch{
-  width: 130px; height: 150px;
-  border-radius: var(--radius) var(--radius) 0 0;
-  background: linear-gradient(160deg, #2c2c2c, #3d3d3d);
-}
 
 /* =========================================================
    RESPONSIVE - TABLET (≤ 1024px)
@@ -1656,6 +1641,12 @@ picture{ display: contents; }
 .contact-detail-item a {
   color: var(--black);
   text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.contact-detail-item a:hover,
+.contact-detail-item a:focus-visible {
+  color: var(--cyan-dark, #0d9488);
 }
 
 /* =========================================================
@@ -1725,7 +1716,6 @@ picture{ display: contents; }
 
   .site-footer{ padding: 32px 20px; }
   .footer-heading{ font-size: 1.5rem; }
-  .footer-swatch{ width: 100px; height: 120px; }
 }
 
 /* =========================================================
