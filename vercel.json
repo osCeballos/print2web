@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
   "redirects": [
     {
       "source": "/:path*",
@@ -10,6 +11,36 @@
         }
       ],
       "destination": "https://tramasweb.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/aviso-legal.html",
+      "destination": "/aviso-legal",
+      "permanent": true
+    },
+    {
+      "source": "/privacidad.html",
+      "destination": "/privacidad",
+      "permanent": true
+    },
+    {
+      "source": "/cookies.html",
+      "destination": "/cookies",
+      "permanent": true
+    },
+    {
+      "source": "/terminos.html",
+      "destination": "/terminos",
+      "permanent": true
+    },
+    {
+      "source": "/exito.html",
+      "destination": "/exito",
+      "permanent": true
+    },
+    {
+      "source": "/cancelado.html",
+      "destination": "/cancelado",
       "permanent": true
     }
   ],

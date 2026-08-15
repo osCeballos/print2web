@@ -173,7 +173,7 @@ async function handler(req, res) {
             const honeypot = getField('website_hp');
             if (honeypot && honeypot.length > 0) {
                 // Silenciosamente simular procesamiento para bloquear bots
-                return res.status(200).json({ url: `${process.env.APP_URL || 'https://tramasweb.com'}/exito.html` });
+                return res.status(200).json({ url: `${process.env.APP_URL || 'https://tramasweb.com'}/exito` });
             }
 
             const campos = {
@@ -250,8 +250,8 @@ async function handler(req, res) {
                     },
                 ],
                 mode: 'payment',
-                success_url: `${baseUrl}/exito.html`,
-                cancel_url: `${baseUrl}/cancelado.html`,
+                success_url: `${baseUrl}/exito`,
+                cancel_url: `${baseUrl}/cancelado`,
                 metadata: {
                     orderId: campos.orderId,
                     documentUrl: blobResult.url, // Guardado de forma privada en metadatos de Stripe
