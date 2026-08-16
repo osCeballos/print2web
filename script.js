@@ -1048,104 +1048,23 @@
         return navegarARuta(route, { pushState: addToHistory, smooth: true });
     }
 
-    function inicializarScrollSpy() {
-        if (!('IntersectionObserver' in window)) return;
-
-        const observerOptions = {
-            root: null,
-            rootMargin: '-20% 0px -60% 0px',
-            threshold: 0
+    // ----------------------------------------------------------------
+    // Navegación interna: Smooth Scroll sin modificar la URL
+    // Los enlaces del navbar (/imprimir, /contacto, etc.) hacen scroll
+    // a la sección correspondiente. La URL NUNCA cambia.
+    // Para páginas externas (aviso-legal, etc.) navegan de forma nativa.
+    // ----------------------------------------------------------------
+    function inicializarNavegacion() {
+        // Mapa: ruta limpia → id de sección en index.html
+        const SECCION_MAP = {
+            '/': null,                       // scroll al top
+            '/imprimir': 'imprimir',
+            '/contacto': 'contacto',
+            '/opiniones': 'opiniones',
+            '/quienes-somos': 'quienes-somos'
         };
 
-        const sectionMap = {
-            'imprimir': '/imprimir',
-            'contacto': '/contacto',
-            'opiniones': '/opiniones',
-            'quienes-somos': '/quienes-somos'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const id = entry.target.id;
-                    const route = sectionMap[id];
-                    if (route && ROUTES_CONFIG[route]) {
-                        actualizarEnlaceActivoNav(route);
-                    }
-                }
-            });
-        }, observerOptions);
-
-        Object.keys(sectionMap).forEach(id => {
-            const el = document.getElementById(id);
-            if (el) observer.observe(el);
-        });
-
-        const heroEl = document.querySelector('.hero');
-        if (heroEl) {
-            const heroObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        actualizarEnlaceActivoNav('/');
-                    }
-                });
-            }, observerOptions);
-            heroObserver.observe(heroEl);
-        }
-    }
-
-    function inicializarEnrutadorSPA() {
-        // 1. Limpieza de hash residual al cargar la página (ej: /#imprimir -> /imprimir o /)
-        const hash = window.location.hash;
-        const hashToRoute = {
-            '#imprimir': '/imprimir',
-            '#contacto': '/contacto',
-            '#opiniones': '/opiniones',
-            '#quienes-somos': '/quienes-somos',
-            '#main-content': '/'
-        };
-
-        if (hash) {
-            if (hashToRoute[hash]) {
-                const rutaLimpia = hashToRoute[hash];
-                const cfg = ROUTES_CONFIG[rutaLimpia];
-                if (cfg) {
-                    try {
-                        history.replaceState({ route: rutaLimpia }, cfg.title, rutaLimpia);
-                    } catch (e) {}
-                    setTimeout(() => {
-                        navegarARuta(rutaLimpia, { pushState: false, smooth: true });
-                    }, 100);
-                }
-            } else {
-                // Eliminar cualquier otro hash de la URL sin recargar
-                try {
-                    const cleanPath = window.location.pathname + window.location.search;
-                    history.replaceState(null, document.title, cleanPath);
-                } catch (e) {}
-            }
-        } else {
-            // 2. Comprobar ruta directa en pathname (ej. /imprimir, /contacto)
-            const rutaActual = normalizarRuta(window.location.pathname);
-            if (ROUTES_CONFIG[rutaActual]) {
-                actualizarMetadatosYRuta(rutaActual, ROUTES_CONFIG[rutaActual]);
-                if (rutaActual !== '/') {
-                    setTimeout(() => {
-                        navegarARuta(rutaActual, { pushState: false, smooth: false });
-                    }, 100);
-                }
-            }
-        }
-
-        // 3. Manejo de navegación hacia atrás / adelante (evento popstate)
-        window.addEventListener('popstate', function() {
-            const ruta = normalizarRuta(window.location.pathname);
-            if (ROUTES_CONFIG[ruta]) {
-                navegarARuta(ruta, { pushState: false, smooth: true });
-            }
-        });
-
-        // 4. Interceptor global de clics: gestiona URLs limpias sin hash
+        // Interceptor global de clics (delegación de eventos)
         document.addEventListener('click', function(e) {
             const link = e.target.closest('a');
             if (!link) return;
@@ -1153,7 +1072,7 @@
             const href = link.getAttribute('href');
             if (!href || href === '#') return;
 
-            // Dejar pasar el skip-link de accesibilidad (navega nativamente a #main-content)
+            // Dejar pasar el skip-link de accesibilidad
             if (link.classList.contains('skip-link')) return;
 
             // Dejar pasar enlaces externos, mailto, tel y target="_blank"
@@ -1173,33 +1092,87 @@
                 path = path.slice(window.location.origin.length);
             }
 
-            // Si es un ancla pura (#algo sin ruta delante), dejar comportamiento nativo
+            // Anclas puras (#algo): dejar comportamiento nativo
             if (path.startsWith('#')) return;
 
-            const rutaNormalizada = normalizarRuta(path);
+            // Normalizar la ruta
+            const ruta = path.replace(/\/+$/, '') || '/';
 
-            // Solo actuar sobre rutas registradas en el router SPA
-            if (ROUTES_CONFIG[rutaNormalizada]) {
-                e.preventDefault(); // Siempre evitar recarga o hash nativo
-                const config = ROUTES_CONFIG[rutaNormalizada];
+            // ¿Es una ruta del SPA (sección de index.html)?
+            if (Object.prototype.hasOwnProperty.call(SECCION_MAP, ruta)) {
+                // Solo actuar si la sección existe en este documento
+                const sectionId = SECCION_MAP[ruta];
+                const sectionEl = sectionId ? document.getElementById(sectionId) : null;
 
-                if (rutaNormalizada === '/' || (config.sectionId && document.getElementById(config.sectionId))) {
-                    // La sección destino existe en el documento actual → navegación SPA
-                    navegarARuta(rutaNormalizada, { pushState: true, smooth: true, focus: link.id === 'header-cta' });
-                } else {
-                    // Estamos en otra página (ej: /aviso-legal) → navegar a URL limpia sin hash
-                    window.location.href = rutaNormalizada;
+                if (ruta === '/' || sectionEl) {
+                    e.preventDefault(); // Evitar navegación y cualquier cambio en la URL
+
+                    // Scroll visual puro: la URL NO cambia
+                    if (sectionEl) {
+                        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                        sectionEl.scrollIntoView({
+                            behavior: prefersReduced ? 'auto' : 'smooth',
+                            block: 'start'
+                        });
+                        // Foco especial para la sección de imprimir
+                        if (sectionId === 'imprimir' || link.id === 'header-cta') {
+                            if (numPaginas) setTimeout(function() { numPaginas.focus(); }, 350);
+                        }
+                    } else {
+                        // Inicio: scroll al top
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+
+                    // Actualizar enlace activo en el nav (sólo visual)
+                    actualizarEnlaceActivoNav(ruta);
+
+                    // Cerrar menú móvil si está abierto
+                    if (menuToggle && mainNav && window.innerWidth <= 1024 && menuToggle.getAttribute('aria-expanded') === 'true') {
+                        menuToggle.setAttribute('aria-expanded', 'false');
+                        mainNav.classList.remove('is-open');
+                    }
+                    return;
                 }
 
-                // Cerrar menú móvil si está abierto
-                if (menuToggle && mainNav && window.innerWidth <= 1024 && menuToggle.getAttribute('aria-expanded') === 'true') {
-                    menuToggle.setAttribute('aria-expanded', 'false');
-                    mainNav.classList.remove('is-open');
-                }
+                // La sección NO existe en este documento (página legal) → navegar a /
+                e.preventDefault();
+                window.location.href = '/';
+                return;
             }
+
+            // Para cualquier otra ruta (aviso-legal, privacidad, etc.): navegación nativa limpia
         });
 
-        inicializarScrollSpy();
+        // ScrollSpy: actualiza el enlace activo del nav según la sección visible
+        // No modifica la URL, solo el estado visual
+        if ('IntersectionObserver' in window) {
+            const spyOptions = { root: null, rootMargin: '-20% 0px -60% 0px', threshold: 0 };
+
+            const sectionIds = ['imprimir', 'contacto', 'opiniones', 'quienes-somos'];
+            const spyObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        actualizarEnlaceActivoNav('/' + entry.target.id);
+                    }
+                });
+            }, spyOptions);
+
+            sectionIds.forEach(function(id) {
+                const el = document.getElementById(id);
+                if (el) spyObserver.observe(el);
+            });
+
+            // Hero: cuando es visible, marcar INICIO como activo
+            const heroEl = document.querySelector('.hero');
+            if (heroEl) {
+                const heroObserver = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) actualizarEnlaceActivoNav('/');
+                    });
+                }, spyOptions);
+                heroObserver.observe(heroEl);
+            }
+        }
     }
 
     // ----------------------------------------------------------------
@@ -1507,6 +1480,13 @@
     actualizarPrevisualizacionMockup();
     inicializarBannerCookies();
     updateHeaderState();
-    inicializarEnrutadorSPA();
+    inicializarNavegacion();
+
+    // Si hay hash en la URL al cargar, limpiarlo sin recargar
+    if (window.location.hash) {
+        try {
+            history.replaceState(null, document.title, window.location.pathname + window.location.search);
+        } catch (e) {}
+    }
     if (modal) modal.hidden = true;
 })();
