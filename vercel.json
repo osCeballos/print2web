@@ -44,6 +44,12 @@
       "permanent": true
     }
   ],
+  "rewrites": [
+    {
+      "source": "/(imprimir|contacto|opiniones|quienes-somos)",
+      "destination": "/index.html"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
