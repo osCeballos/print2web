@@ -1097,7 +1097,7 @@
     }
 
     function inicializarEnrutadorSPA() {
-        // 1. Retrocompatibilidad con hash antiguo (/#imprimir, #contacto, etc.)
+        // 1. Limpieza de hash residual al cargar la página (ej: /#imprimir -> /imprimir o /)
         const hash = window.location.hash;
         const hashToRoute = {
             '#imprimir': '/imprimir',
@@ -1107,16 +1107,24 @@
             '#main-content': '/'
         };
 
-        if (hash && hashToRoute[hash]) {
-            const rutaLimpia = hashToRoute[hash];
-            const cfg = ROUTES_CONFIG[rutaLimpia];
-            if (cfg) {
+        if (hash) {
+            if (hashToRoute[hash]) {
+                const rutaLimpia = hashToRoute[hash];
+                const cfg = ROUTES_CONFIG[rutaLimpia];
+                if (cfg) {
+                    try {
+                        history.replaceState({ route: rutaLimpia }, cfg.title, rutaLimpia);
+                    } catch (e) {}
+                    setTimeout(() => {
+                        navegarARuta(rutaLimpia, { pushState: false, smooth: true });
+                    }, 100);
+                }
+            } else {
+                // Eliminar cualquier otro hash de la URL sin recargar
                 try {
-                    history.replaceState({ route: rutaLimpia }, cfg.title, rutaLimpia);
+                    const cleanPath = window.location.pathname + window.location.search;
+                    history.replaceState(null, document.title, cleanPath);
                 } catch (e) {}
-                setTimeout(() => {
-                    navegarARuta(rutaLimpia, { pushState: false, smooth: true });
-                }, 100);
             }
         } else {
             // 2. Comprobar ruta directa en pathname (ej. /imprimir, /contacto)
@@ -1139,7 +1147,7 @@
             }
         });
 
-        // 4. Interceptación global de clics en enlaces SPA
+        // 4. Interceptación global de clics para URLs limpias y Scroll sin Hash
         document.addEventListener('click', function(e) {
             const link = e.target.closest('a');
             if (!link) return;
@@ -1152,13 +1160,53 @@
                 href.startsWith('mailto:') ||
                 href.startsWith('tel:') ||
                 href.startsWith('http://') ||
-                href.startsWith('https://') && !href.startsWith(window.location.origin) ||
-                link.getAttribute('target') === '_blank' ||
-                link.classList.contains('skip-link')
+                (href.startsWith('https://') && !href.startsWith(window.location.origin)) ||
+                link.getAttribute('target') === '_blank'
             ) {
                 return;
             }
 
+            // A. Manejo de enlaces de ancla interna pura (ej: href="#contacto" o href="#imprimir")
+            if (href.startsWith('#')) {
+                if (link.classList.contains('skip-link')) return; // Permitir salto accesible del skip link
+
+                const targetId = href.substring(1);
+                if (!targetId) return;
+
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    e.preventDefault();
+
+                    // Scroll fluido hacia la sección sin añadir hash a la URL
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    // Accesibilidad sin scroll adicional
+                    if (!targetElement.hasAttribute('tabindex')) {
+                        targetElement.setAttribute('tabindex', '-1');
+                    }
+                    try {
+                        targetElement.focus({ preventScroll: true });
+                    } catch (err) {}
+
+                    // Si coincide con una ruta limpia configurada, actualizamos el path limpio sin hash
+                    const rutaLimpia = '/' + targetId;
+                    if (ROUTES_CONFIG[rutaLimpia]) {
+                        try {
+                            history.pushState({ route: rutaLimpia }, ROUTES_CONFIG[rutaLimpia].title, rutaLimpia);
+                            actualizarMetadatosYRuta(rutaLimpia, ROUTES_CONFIG[rutaLimpia]);
+                        } catch (err) {}
+                    }
+
+                    // Cerrar menú móvil si está abierto
+                    if (menuToggle && mainNav && window.innerWidth <= 1024 && menuToggle.getAttribute('aria-expanded') === 'true') {
+                        menuToggle.setAttribute('aria-expanded', 'false');
+                        mainNav.classList.remove('is-open');
+                    }
+                    return;
+                }
+            }
+
+            // B. Manejo de rutas limpias configuradas (ej: href="/imprimir" o href="/contacto")
             let path = href;
             if (path.startsWith(window.location.origin)) {
                 path = path.slice(window.location.origin.length);
@@ -1166,14 +1214,21 @@
 
             const rutaNormalizada = normalizarRuta(path);
             if (ROUTES_CONFIG[rutaNormalizada]) {
-                e.preventDefault();
-                navegarARuta(rutaNormalizada, { pushState: true, smooth: true, focus: link.id === 'header-cta' });
+                const config = ROUTES_CONFIG[rutaNormalizada];
+                
+                // Si la sección existe en la página actual (o es inicio '/')
+                if (rutaNormalizada === '/' || (config.sectionId && document.getElementById(config.sectionId))) {
+                    e.preventDefault();
+                    navegarARuta(rutaNormalizada, { pushState: true, smooth: true, focus: link.id === 'header-cta' });
 
-                // Cerrar menú móvil si está abierto
-                if (menuToggle && mainNav && window.innerWidth <= 1024 && menuToggle.getAttribute('aria-expanded') === 'true') {
-                    menuToggle.setAttribute('aria-expanded', 'false');
-                    mainNav.classList.remove('is-open');
+                    // Cerrar menú móvil si está abierto
+                    if (menuToggle && mainNav && window.innerWidth <= 1024 && menuToggle.getAttribute('aria-expanded') === 'true') {
+                        menuToggle.setAttribute('aria-expanded', 'false');
+                        mainNav.classList.remove('is-open');
+                    }
                 }
+                // Si la sección NO existe en el documento actual (ej: estamos en /aviso-legal),
+                // dejamos que el navegador navegue de forma nativa a la URL limpia
             }
         });
 

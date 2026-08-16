@@ -30,6 +30,20 @@
 
 html{ scroll-behavior: smooth; }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Offset para scroll con cabecera sticky/fija */
+section[id],
+main[id],
+footer[id],
+div[id] {
+  scroll-margin-top: 80px;
+}
+
 body{
   font-family: var(--font);
   color: var(--black);
