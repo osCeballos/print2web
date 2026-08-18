@@ -2,8 +2,8 @@
     'use strict';
 
     // JSON-LD LocalBusiness/PrintShop declarado estáticamente en el <head> de index.html
-    // (Movido de inyección dinámica a HTML estático para compatibilidad total con crawlers
-    //  estáticos, Search Console Rich Results Test y Googlebot sin render JS — SEO audit P3)
+    // (Movido de inyecciÃ³n dinÃ¡mica a HTML estático para compatibilidad total con crawlers
+    //  estáticos, Search Console Rich Results Test y Googlebot sin render JS â€” SEO audit P3)
 
     let currentOrderId = null;
 
@@ -33,7 +33,7 @@
     }
 
     // ----------------------------------------------------------------
-    // Referencias DOM principales del formulario de impresión y contacto
+    // Referencias DOM principales del formulario de impresiÃ³n y contacto
     // ----------------------------------------------------------------
     const form = document.getElementById('print-form');
     const numPaginas = document.getElementById('num-paginas');
@@ -97,7 +97,7 @@
     const custCp = document.getElementById('cust-cp');
     const custCity = document.getElementById('cust-city');
 
-    // Métodos de Pago (Manejado 100% por pasarela segura Stripe Checkout)
+    // MÃ©todos de Pago (Manejado 100% por pasarela segura Stripe Checkout)
     const orderCodeDisplay = document.getElementById('order-code-display');
 
     const orderReceiptSummary = document.getElementById('order-receipt-summary');
@@ -111,7 +111,7 @@
     let selectedPaymentMethod = 'bizum';
     let currentOrderData = null;
 
-    // Carga dinámica bajo demanda de PDF.js (0 bytes y 0 tiempo de parseo en carga inicial)
+    // Carga dinÃ¡mica bajo demanda de PDF.js (0 bytes y 0 tiempo de parseo en carga inicial)
     let pdfJsLoadingPromise = null;
     function cargarPdfJsEnDemanda() {
         if (window.pdfjsLib) {
@@ -145,7 +145,7 @@
     const PRECIO_ENVIO = 5.00;
 
     // ----------------------------------------------------------------
-    // Cálculo Dinámico de Total
+    // CÃ¡lculo DinÃ¡mico de Total
     // ----------------------------------------------------------------
     function calcularTotal() {
         if (!numPaginas || !modoColor) return 0;
@@ -162,7 +162,7 @@
         let costoEnvio = 0;
         const esRecogidaEnTienda = (deliveryOptionRecogida && deliveryOptionRecogida.checked);
         
-        // Si no está seleccionada recogida presencial y el envío a domicilio está activo
+        // Si no está seleccionada recogida presencial y el envÃ­o a domicilio está activo
         if (!esRecogidaEnTienda && envio && envio.checked) {
             costoEnvio = PRECIO_ENVIO;
         }
@@ -177,7 +177,7 @@
             totalAmountSpan.textContent = total.toFixed(2);
         }
         if (modalCheckoutTotal) {
-            modalCheckoutTotal.textContent = total.toFixed(2) + ' €';
+            modalCheckoutTotal.textContent = total.toFixed(2) + ' â‚¬';
         }
     }
 
@@ -213,7 +213,7 @@
     }
 
     // ----------------------------------------------------------------
-    // Actualización visual del Mockup A4
+    // ActualizaciÃ³n visual del Mockup A4
     // ----------------------------------------------------------------
     function actualizarOrientacionMockup() {
         if (!mockupSheet) return;
@@ -262,7 +262,7 @@
         if (!mockupDocPages) return;
         const numP = numPaginas ? Math.max(1, parseInt(numPaginas.value, 10) || 1) : 1;
         const copias = numCopias ? Math.max(1, parseInt(numCopias.value, 10) || 1) : 1;
-        mockupDocPages.textContent = `${numP} pág${numP > 1 ? 's' : ''} (${copias} copia${copias > 1 ? 's' : ''})`;
+        mockupDocPages.textContent = `${numP} pÃ¡g${numP > 1 ? 's' : ''} (${copias} copia${copias > 1 ? 's' : ''})`;
     }
 
     function renderizarPagina1PDF(file) {
@@ -339,7 +339,7 @@
             fileNameSpan.textContent = files[0].name;
             fileInfoContainer.hidden = false;
         } else {
-            fileNameSpan.textContent = 'Ningún archivo seleccionado';
+            fileNameSpan.textContent = 'NingÃºn archivo seleccionado';
             fileInfoContainer.hidden = true;
         }
     }
@@ -411,7 +411,7 @@
     }
 
     // ----------------------------------------------------------------
-    // Validación previa al pedido
+    // ValidaciÃ³n previa al pedido
     // ----------------------------------------------------------------
     let lastFocusedElement = null;
 
@@ -426,7 +426,7 @@
     }
 
     // ----------------------------------------------------------------
-    // Validación previa al pedido y gestión accesible de errores
+    // ValidaciÃ³n previa al pedido y gestiÃ³n accesible de errores
     // ----------------------------------------------------------------
     function mostrarErrorFormulario(mensaje, targetInput) {
         if (!formErrorMsg) return;
@@ -456,7 +456,7 @@
         }
     }
 
-    // Gestión accesible e independiente de errores del formulario de contacto
+    // GestiÃ³n accesible e independiente de errores del formulario de contacto
     function mostrarErrorContacto(mensaje, targetInput) {
         if (!contactErrorMsg) return;
         contactErrorMsg.textContent = mensaje;
@@ -515,19 +515,19 @@
 
     function validarFormularioPrincipal() {
         if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-            mostrarErrorFormulario('⚠️ Por favor, selecciona o arrastra tu archivo A4 antes de continuar.', addFileBtn);
+            mostrarErrorFormulario('âš ï¸ Por favor, selecciona o arrastra tu archivo A4 antes de continuar.', addFileBtn);
             return false;
         }
 
         const numP = parseInt(numPaginas ? numPaginas.value : '1', 10);
         if (isNaN(numP) || numP < 1) {
-            mostrarErrorFormulario('⚠️ El número de páginas debe ser al menos 1.', numPaginas);
+            mostrarErrorFormulario('âš ï¸ El nÃºmero de pÃ¡ginas debe ser al menos 1.', numPaginas);
             return false;
         }
 
         const numC = parseInt(numCopias ? numCopias.value : '1', 10);
         if (isNaN(numC) || numC < 1) {
-            mostrarErrorFormulario('⚠️ El número de copias debe ser al menos 1.', numCopias);
+            mostrarErrorFormulario('âš ï¸ El nÃºmero de copias debe ser al menos 1.', numCopias);
             return false;
         }
 
@@ -548,7 +548,7 @@
         if (checkoutStep3) checkoutStep3.classList.add('is-hidden');
         if (checkoutStep4) checkoutStep4.classList.add('is-hidden');
 
-        // Actualizar pestañas indicadoras
+        // Actualizar pestaÃ±as indicadoras
         if (stepTab1) {
             stepTab1.classList.toggle('active', paso === 1);
             if (paso === 1) stepTab1.setAttribute('aria-current', 'step'); else stepTab1.removeAttribute('aria-current');
@@ -568,7 +568,7 @@
             if (modalPrevBtn) modalPrevBtn.classList.add('is-hidden');
             if (modalNextBtn) {
                 modalNextBtn.classList.remove('is-hidden');
-                modalNextBtn.textContent = 'Continuar a Datos & Entrega →';
+                modalNextBtn.textContent = 'Continuar a Datos & Entrega â†’';
             }
             if (confirmPayBtn) confirmPayBtn.classList.add('is-hidden');
             renderizarResumenPaso1();
@@ -577,7 +577,7 @@
             if (modalPrevBtn) modalPrevBtn.classList.remove('is-hidden');
             if (modalNextBtn) {
                 modalNextBtn.classList.remove('is-hidden');
-                modalNextBtn.textContent = 'Continuar al Pago →';
+                modalNextBtn.textContent = 'Continuar al Pago â†’';
             }
             if (confirmPayBtn) confirmPayBtn.classList.add('is-hidden');
         } else if (paso === 3) {
@@ -588,7 +588,7 @@
             if (confirmPayBtn) confirmPayBtn.classList.remove('is-hidden');
             actualizarTotal();
         } else if (paso === 4) {
-            // Paso Éxito
+            // Paso Ã‰xito
             if (checkoutStep4) checkoutStep4.classList.remove('is-hidden');
             if (modalPrevBtn) modalPrevBtn.classList.add('is-hidden');
             if (modalNextBtn) modalNextBtn.classList.add('is-hidden');
@@ -597,7 +597,7 @@
 
         trapFocus(modal);
 
-        // Mover foco al encabezado del paso activo para navegación por teclado idónea (WCAG 2.4.3)
+        // Mover foco al encabezado del paso activo para navegación por teclado idÃ³nea (WCAG 2.4.3)
         const activeStepTitle = document.getElementById(`step-title-${paso}`);
         if (activeStepTitle) {
             activeStepTitle.focus();
@@ -609,24 +609,24 @@
         const total = calcularTotal();
         const numP = numPaginas ? numPaginas.value : 1;
         const copias = numCopias ? numCopias.value : 1;
-        const color = (modoColor && modoColor.value === 'color') ? 'Color (0,50€/pág)' : 'Blanco y negro (0,30€/pág)';
+        const color = (modoColor && modoColor.value === 'color') ? 'Color (0,50â‚¬/pÃ¡g)' : 'Blanco y negro (0,30â‚¬/pÃ¡g)';
         const diapo = (modoDiapositiva && modoDiapositiva.value === 'simple') ? 'Una cara (Simple)' : 'Dos caras (Doble)';
-        const enc = (encuadernado && encuadernado.checked) ? `Sí (+${(PRECIO_ENCUADERNACION * copias).toFixed(2)}€)` : 'No';
-        const envText = (envio && envio.checked) ? 'Envío a domicilio (+5,00€)' : 'Recogida presencial gratuita';
+        const enc = (encuadernado && encuadernado.checked) ? `SÃ­ (+${(PRECIO_ENCUADERNACION * copias).toFixed(2)}â‚¬)` : 'No';
+        const envText = (envio && envio.checked) ? 'EnvÃ­o a domicilio (+5,00â‚¬)' : 'Recogida presencial gratuita';
         const fileName = (fileInput && fileInput.files && fileInput.files.length > 0) ? fileInput.files[0].name : 'Documento';
 
-        // Construcción segura del DOM sin interpolación no confiable en innerHTML (SEC-01)
+        // ConstrucciÃ³n segura del DOM sin interpolaciÃ³n no confiable en innerHTML (SEC-01)
         modalDetailSummary.textContent = '';
 
         const items = [
             { label: 'Archivo adjunto:', value: fileName },
-            { label: 'Formato de papel:', value: 'A4 Estándar (210 x 297 mm)' },
-            { label: 'Páginas por ejemplar:', value: `${numP} pág${numP > 1 ? 's' : ''}` },
+            { label: 'Formato de papel:', value: 'A4 estándar (210 x 297 mm)' },
+            { label: 'PÃ¡ginas por ejemplar:', value: `${numP} pÃ¡g${numP > 1 ? 's' : ''}` },
             { label: 'Ejemplares (Copias):', value: `${copias}` },
             { label: 'Modo de color:', value: color },
-            { label: 'Caras de impresión:', value: diapo },
-            { label: 'Encuadernación espiral:', value: enc },
-            { label: 'Opción de entrega actual:', value: envText }
+            { label: 'Caras de impresiÃ³n:', value: diapo },
+            { label: 'EncuadernaciÃ³n espiral:', value: enc },
+            { label: 'OpciÃ³n de entrega actual:', value: envText }
         ];
 
         items.forEach(function(item) {
@@ -650,19 +650,19 @@
 
         const totalSpan = document.createElement('span');
         totalSpan.className = 'modal-summary-total-amount';
-        totalSpan.textContent = `${total.toFixed(2)} €`;
+        totalSpan.textContent = `${total.toFixed(2)} â‚¬`;
         totalP.appendChild(totalSpan);
 
         modalDetailSummary.appendChild(totalP);
     }
 
-    // Modalidad de Entrega (Envío vs Recogida)
+    // Modalidad de Entrega (EnvÃ­o vs Recogida)
     function actualizarOpcionesEntregaUI() {
         const esEnvio = deliveryOptionEnvio && deliveryOptionEnvio.checked;
         if (shippingAddressFields) {
             shippingAddressFields.style.display = esEnvio ? 'grid' : 'none';
         }
-        // Marcar o desmarcar la casilla principal de envío
+        // Marcar o desmarcar la casilla principal de envÃ­o
         if (envio) {
             envio.checked = esEnvio;
         }
@@ -676,30 +676,30 @@
     // Validar Paso 2 (Datos de Cliente y Entrega)
     function validarPaso2() {
         if (!custName || !custName.value.trim()) {
-            mostrarErrorModal('⚠️ Por favor, ingresa tu Nombre y Apellidos.', custName);
+            mostrarErrorModal('âš ï¸ Por favor, ingresa tu Nombre y Apellidos.', custName);
             return false;
         }
         if (!custEmail || !custEmail.value.trim() || !custEmail.value.includes('@')) {
-            mostrarErrorModal('⚠️ Por favor, ingresa un correo electrónico válido.', custEmail);
+            mostrarErrorModal('âš ï¸ Por favor, ingresa un correo electrÃ³nico vÃ¡lido.', custEmail);
             return false;
         }
         if (!custPhone || !custPhone.value.trim()) {
-            mostrarErrorModal('⚠️ Por favor, ingresa un número de teléfono de contacto.', custPhone);
+            mostrarErrorModal('âš ï¸ Por favor, ingresa un nÃºmero de telÃ©fono de contacto.', custPhone);
             return false;
         }
 
         const esEnvio = deliveryOptionEnvio && deliveryOptionEnvio.checked;
         if (esEnvio) {
             if (!custAddress || !custAddress.value.trim()) {
-                mostrarErrorModal('⚠️ Por favor, ingresa tu dirección de envío.', custAddress);
+                mostrarErrorModal('âš ï¸ Por favor, ingresa tu direcciÃ³n de envÃ­o.', custAddress);
                 return false;
             }
             if (!custCp || !custCp.value.trim()) {
-                mostrarErrorModal('⚠️ Por favor, ingresa el código postal.', custCp);
+                mostrarErrorModal('âš ï¸ Por favor, ingresa el cÃ³digo postal.', custCp);
                 return false;
             }
             if (!custCity || !custCity.value.trim()) {
-                mostrarErrorModal('⚠️ Por favor, ingresa la ciudad / población.', custCity);
+                mostrarErrorModal('âš ï¸ Por favor, ingresa la ciudad / poblaciÃ³n.', custCity);
                 return false;
             }
         }
@@ -727,7 +727,7 @@
         });
     }
 
-    // Finalización del Pedido y Redirección a Stripe Checkout
+    // FinalizaciÃ³n del Pedido y RedirecciÃ³n a Stripe Checkout
     if (confirmPayBtn) {
         confirmPayBtn.addEventListener('click', async function() {
             const originalText = confirmPayBtn.innerHTML;
@@ -742,11 +742,11 @@
                     throw new Error("Falta el documento adjunto.");
                 }
 
-                // Límite máximo de carga directa (4.4 MB)
+                // LÃ­mite mÃ¡ximo de carga directa (4.4 MB)
                 const maxServerlessBytes = 4.4 * 1024 * 1024;
                 if (selectedFile.size > maxServerlessBytes) {
                     const mbSize = (selectedFile.size / (1024 * 1024)).toFixed(1);
-                    throw new Error(`El archivo (${mbSize} MB) supera el tamaño máximo permitido para subir online (4.4 MB). Por favor comprime el documento o contacta con nosotros en el taller.`);
+                    throw new Error(`El archivo (${mbSize} MB) supera el tamaÃ±o mÃ¡ximo permitido para subir online (4.4 MB). Por favor comprime el documento o contacta con nosotros en el taller.`);
                 }
 
                 formData.append('documento', selectedFile);
@@ -784,17 +784,17 @@
                     data = JSON.parse(responseText);
                 } catch (parseErr) {
                     if (response.status === 413) {
-                        throw new Error('El archivo adjunto supera el tamaño máximo permitido por el servidor serverless (4.5 MB).');
+                        throw new Error('El archivo adjunto supera el tamaÃ±o mÃ¡ximo permitido por el servidor serverless (4.5 MB).');
                     }
                     throw new Error(`Error en la respuesta del servidor (Estado ${response.status}).`);
                 }
 
                 if (!response.ok) {
-                    throw new Error(data.error || 'Error de comunicación con el servidor');
+                    throw new Error(data.error || 'Error de comunicaciÃ³n con el servidor');
                 }
 
                 if (!data.url) {
-                    throw new Error('No se recibió la URL de redirección a la pasarela de pago.');
+                    throw new Error('No se recibiÃ³ la URL de redirecciÃ³n a la pasarela de pago.');
                 }
                 
                 // Redirigir a Stripe Checkout
@@ -802,7 +802,7 @@
 
             } catch (error) {
                 console.error(error);
-                mostrarErrorModal('⚠️ Error: ' + error.message);
+                mostrarErrorModal('âš ï¸ Error: ' + error.message);
                 confirmPayBtn.innerHTML = originalText;
                 confirmPayBtn.disabled = false;
             }
@@ -835,7 +835,7 @@
         if (!validarFormularioPrincipal()) return;
         if (!modal) return;
         modal.hidden = false;
-        // Forzar layout para desencadenar la animación
+        // Forzar layout para desencadenar la animaciÃ³n
         void modal.offsetWidth;
         modal.classList.add('is-open');
         irAPasoModal(1);
@@ -854,7 +854,7 @@
             } else if (comprarBtn) {
                 comprarBtn.focus();
             }
-        }, 300); // 300ms debe coincidir con la transición en CSS
+        }, 300); // 300ms debe coincidir con la transiciÃ³n en CSS
     }
 
     function trapFocus(element) {
@@ -901,7 +901,7 @@
     const skipLink = document.querySelector('.skip-link');
 
     // ----------------------------------------------------------------
-    // Control del Menú Hamburguesa Móvil (WCAG 4.1.2, 2.1.1 & 2.1.2)
+    // Control del MenÃº Hamburguesa MÃ³vil (WCAG 4.1.2, 2.1.1 & 2.1.2)
     // ----------------------------------------------------------------
     const menuToggle = document.getElementById('menu-toggle');
     const mainNav = document.getElementById('main-nav');
@@ -913,9 +913,9 @@
             mainNav.classList.toggle('is-open');
             if (siteHeader) siteHeader.classList.remove('header-hidden');
             if (!isExpanded) {
-                announceToScreenReader('Menú de navegación abierto');
+                announceToScreenReader('MenÃº de navegación abierto');
             } else {
-                announceToScreenReader('Menú de navegación cerrado');
+                announceToScreenReader('MenÃº de navegación cerrado');
             }
         });
 
@@ -925,73 +925,19 @@
                 menuToggle.setAttribute('aria-expanded', 'false');
                 mainNav.classList.remove('is-open');
                 menuToggle.focus();
-                announceToScreenReader('Menú de navegación cerrado');
+                announceToScreenReader('MenÃº de navegación cerrado');
             }
         });
     }
 
     // ----------------------------------------------------------------
-    // Enrutador SPA con History API (URLs limpias sin recarga de página)
+    // navegación interna: Smooth Scroll con anclas (#) accesible
     // ----------------------------------------------------------------
-    const ROUTES_CONFIG = {
-        '/': {
-            id: 'inicio',
-            sectionId: null,
-            title: 'Imprenta Digital en Sant Just Desvern | Print2Web',
-            description: 'Impresión digital rápida y profesional en Sant Just Desvern (Barcelona). Configura y encarga online tus impresiones A4, catálogos y dossieres con taller propio.',
-            canonical: 'https://tramasweb.com/',
-            ogImage: 'https://tramasweb.com/img/og-image.webp',
-            navKey: '/'
-        },
-        '/imprimir': {
-            id: 'imprimir',
-            sectionId: 'imprimir',
-            title: 'Imprimir Online A4 | Print2Web',
-            description: 'Configura y encarga online tus documentos A4 a color o blanco y negro con acabado profesional y opción de encuadernación en espiral en Print2Web.',
-            canonical: 'https://tramasweb.com/imprimir',
-            ogImage: 'https://tramasweb.com/img/og-image.webp',
-            navKey: '/imprimir'
-        },
-        '/contacto': {
-            id: 'contacto',
-            sectionId: 'contacto',
-            title: 'Contacto y Taller en Sant Just | Print2Web',
-            description: 'Visita nuestro taller de impresión en Ctra. Reial 15-17 (Sant Just Desvern) o contáctanos por teléfono y email para tus proyectos de artes gráficas.',
-            canonical: 'https://tramasweb.com/contacto',
-            ogImage: 'https://tramasweb.com/img/og-image.webp',
-            navKey: '/contacto'
-        },
-        '/opiniones': {
-            id: 'opiniones',
-            sectionId: 'opiniones',
-            title: 'Opiniones y Valoraciones | Print2Web',
-            description: 'Descubre las opiniones de nuestros clientes sobre la calidad y rapidez de nuestros servicios de imprenta digital en Sant Just y Barcelona.',
-            canonical: 'https://tramasweb.com/opiniones',
-            ogImage: 'https://tramasweb.com/img/og-image.webp',
-            navKey: '/opiniones'
-        },
-        '/quienes-somos': {
-            id: 'quienes-somos',
-            sectionId: 'quienes-somos',
-            title: 'Quiénes Somos | Print2Web',
-            description: 'Conoce más sobre Tramas Solucions Gràfiques SL, taller de imprenta y diseño gráfico en Sant Just Desvern ofreciendo servicios de impresión desde 2008.',
-            canonical: 'https://tramasweb.com/quienes-somos',
-            ogImage: 'https://tramasweb.com/img/og-image.webp',
-            navKey: '/quienes-somos'
-        }
-    };
-
-    function normalizarRuta(pathname) {
-        if (!pathname || pathname === '' || pathname === '/index.html') return '/';
-        const sinSlashFinal = pathname.replace(/\/+$/, '');
-        return sinSlashFinal === '' ? '/' : sinSlashFinal;
-    }
-
-    function actualizarEnlaceActivoNav(navKey) {
-        const mainNavLinks = document.querySelectorAll('.main-nav a');
+    function actualizarEnlaceActivoNav(hash) {
+        var mainNavLinks = document.querySelectorAll('.main-nav a');
         mainNavLinks.forEach(function(link) {
-            const href = link.getAttribute('href');
-            if (href === navKey || (navKey === '/' && (href === '/' || href === '#main-content'))) {
+            var href = link.getAttribute('href');
+            if (href === hash || (hash === '#main-content' && (href === '#main-content' || href === '/'))) {
                 link.setAttribute('aria-current', 'page');
                 link.classList.add('active');
             } else {
@@ -1001,272 +947,117 @@
         });
     }
 
-    // Cache de referencias a etiquetas meta/link para máxima velocidad en transiciones SPA
-    const metaElementsCache = {
-        metaDesc: document.querySelector('meta[name="description"]'),
-        canonicalLink: document.querySelector('link[rel="canonical"]'),
-        ogUrl: document.querySelector('meta[property="og:url"]'),
-        ogTitle: document.querySelector('meta[property="og:title"]'),
-        ogDesc: document.querySelector('meta[property="og:description"]'),
-        twTitle: document.querySelector('meta[name="twitter:title"]'),
-        twDesc: document.querySelector('meta[name="twitter:description"]'),
-        twUrl: document.querySelector('meta[name="twitter:url"]')
-    };
-
-    function actualizarMetadatosYRuta(ruta, config) {
-        if (!config) return;
-
-        if (config.title) {
-            document.title = config.title;
-        }
-
-        if (metaElementsCache.metaDesc && config.description) {
-            metaElementsCache.metaDesc.setAttribute('content', config.description);
-        }
-        if (metaElementsCache.canonicalLink && config.canonical) {
-            metaElementsCache.canonicalLink.setAttribute('href', config.canonical);
-        }
-        if (metaElementsCache.ogUrl && config.canonical) {
-            metaElementsCache.ogUrl.setAttribute('content', config.canonical);
-        }
-        if (metaElementsCache.ogTitle && config.title) {
-            metaElementsCache.ogTitle.setAttribute('content', config.title);
-        }
-        if (metaElementsCache.ogDesc && config.description) {
-            metaElementsCache.ogDesc.setAttribute('content', config.description);
-        }
-        if (metaElementsCache.twTitle && config.title) {
-            metaElementsCache.twTitle.setAttribute('content', config.title);
-        }
-        if (metaElementsCache.twDesc && config.description) {
-            metaElementsCache.twDesc.setAttribute('content', config.description);
-        }
-        if (metaElementsCache.twUrl && config.canonical) {
-            metaElementsCache.twUrl.setAttribute('content', config.canonical);
-        }
-
-        actualizarEnlaceActivoNav(config.navKey);
-    }
-
-    // Gestión accesible del foco al navegar entre secciones SPA (WCAG 2.4.3)
-    function moverFocoASeccion(sectionEl, sectionId) {
-        if (!sectionEl && !sectionId) {
-            const mainContent = document.getElementById('main-content');
-            if (mainContent) {
-                mainContent.focus();
-            }
-            return;
-        }
-
-        if (sectionId === 'imprimir') {
-            if (numPaginas) {
-                setTimeout(() => numPaginas.focus(), 350);
-            }
-            return;
-        }
-
-        // Buscar encabezado dentro de la sección o enfocar el contenedor con tabindex="-1"
-        const heading = sectionEl ? sectionEl.querySelector('h1, h2, h3') : null;
-        if (heading) {
-            if (!heading.hasAttribute('tabindex')) {
-                heading.setAttribute('tabindex', '-1');
-            }
-            heading.focus();
-        } else if (sectionEl) {
-            sectionEl.focus();
-        }
-    }
-
-    function navegarARuta(ruta, opciones) {
-        const opt = Object.assign({ pushState: true, smooth: true, focus: true }, opciones || {});
-        const normalizada = normalizarRuta(ruta);
-        let config = ROUTES_CONFIG[normalizada];
-
-        // Manejo de rutas no definidas -> fallback seguro a inicio
-        if (!config) {
-            navegarARuta('/', { pushState: opt.pushState, smooth: false, focus: opt.focus });
-            return false;
-        }
-
-        if (opt.pushState && window.location.pathname !== normalizada) {
-            try {
-                history.pushState({ route: normalizada }, config.title, normalizada);
-            } catch (e) {
-                // Fallback en entornos restringidos
-            }
-        }
-
-        actualizarMetadatosYRuta(normalizada, config);
-        if (config.title) {
-            announceToScreenReader(config.title);
-        }
-
-        if (config.sectionId) {
-            const section = document.getElementById(config.sectionId);
-            if (section) {
-                const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                section.scrollIntoView({ behavior: (opt.smooth && !prefersReduced) ? 'smooth' : 'auto', block: 'start' });
-                if (opt.focus) {
-                    moverFocoASeccion(section, config.sectionId);
-                }
-            }
-        } else {
-            const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            window.scrollTo({ top: 0, behavior: (opt.smooth && !prefersReduced) ? 'smooth' : 'auto' });
-            if (opt.focus) {
-                moverFocoASeccion(null, null);
-            }
-        }
-
-        return true;
-    }
-
-    function navigate(route, addToHistory = true) {
-        return navegarARuta(route, { pushState: addToHistory, smooth: true, focus: true });
-    }
-
-    // ----------------------------------------------------------------
-    // Navegación interna: Smooth Scroll con History API accesible
-    // ----------------------------------------------------------------
     function inicializarNavegacion() {
-        // Mapa: ruta limpia → id de sección en index.html
-        const SECCION_MAP = {
-            '/': null,                       // scroll al top
-            '/imprimir': 'imprimir',
-            '/contacto': 'contacto',
-            '/opiniones': 'opiniones',
-            '/quienes-somos': 'quienes-somos'
-        };
+        var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var scrollBehavior = prefersReduced ? 'auto' : 'smooth';
 
-        // Deep Linking en carga inicial: sincronización inmediata sin retraso artificial (elimina FOUC/salto visual)
-        const initialPath = normalizarRuta(window.location.pathname);
-        if (initialPath !== '/' && Object.prototype.hasOwnProperty.call(SECCION_MAP, initialPath)) {
-            const initialSectionId = SECCION_MAP[initialPath];
-            const initialSectionEl = initialSectionId ? document.getElementById(initialSectionId) : null;
-            if (initialSectionEl) {
-                requestAnimationFrame(function() {
-                    initialSectionEl.scrollIntoView({ behavior: 'auto', block: 'start' });
-                    moverFocoASeccion(initialSectionEl, initialSectionId);
-                    const initConfig = ROUTES_CONFIG[initialPath];
-                    if (initConfig && initConfig.title) {
-                        announceToScreenReader(initConfig.title);
-                    }
-                });
-            }
-        }
-
-        // Interceptor global de clics (delegación de eventos hacia navegarARuta)
+        // Smooth scroll para todos los enlaces con ancla en la misma pÃ¡gina
         document.addEventListener('click', function(e) {
-            const link = e.target.closest('a');
+            var link = e.target.closest('a');
             if (!link) return;
 
-            const href = link.getAttribute('href');
-            if (!href || href === '#') return;
+            var href = link.getAttribute('href');
+            if (!href) return;
 
-            // Dejar pasar el skip-link de accesibilidad
+            // Dejar pasar el skip-link de accesibilidad (funciona nativamente)
             if (link.classList.contains('skip-link')) return;
 
-            // Dejar pasar enlaces externos, protocol-relative, mailto, tel y target="_blank"
-            if (
-                href.startsWith('//') ||
-                href.startsWith('mailto:') ||
-                href.startsWith('tel:') ||
-                href.startsWith('http://') ||
-                (href.startsWith('https://') && !href.startsWith(window.location.origin)) ||
-                link.getAttribute('target') === '_blank'
-            ) {
+            // Solo interceptar enlaces con hash que apunten a secciones de esta pÃ¡gina
+            var targetId = null;
+
+            if (href.startsWith('#') && href.length > 1) {
+                // Ancla pura: #imprimir, #contacto, etc.
+                targetId = href.substring(1);
+            } else {
+                // No es un enlace de ancla local, dejar comportamiento nativo
                 return;
             }
 
-            // Extraer el path limpio (sin dominio)
-            let path = href;
-            if (path.startsWith(window.location.origin)) {
-                path = path.slice(window.location.origin.length);
+            var targetEl = document.getElementById(targetId);
+            if (!targetEl) return;
+
+            e.preventDefault();
+
+            targetEl.scrollIntoView({ behavior: scrollBehavior, block: 'start' });
+
+            // Actualizar hash en la URL sin recargar
+            if (history.replaceState) {
+                history.replaceState(null, '', href);
             }
 
-            // Anclas puras (#algo): dejar comportamiento nativo
-            if (path.startsWith('#')) return;
-
-            // Normalizar la ruta
-            const ruta = path.replace(/\/+$/, '') || '/';
-
-            // ¿Es una ruta del SPA (sección de index.html)?
-            if (Object.prototype.hasOwnProperty.call(SECCION_MAP, ruta)) {
-                const sectionId = SECCION_MAP[ruta];
-                const sectionEl = sectionId ? document.getElementById(sectionId) : null;
-
-                if (ruta === '/' || sectionEl) {
-                    e.preventDefault();
-                    navegarARuta(ruta, { pushState: true, smooth: true, focus: true });
-
-                    // Cerrar menú móvil si está abierto
-                    if (menuToggle && mainNav && window.innerWidth <= 1024 && menuToggle.getAttribute('aria-expanded') === 'true') {
-                        menuToggle.setAttribute('aria-expanded', 'false');
-                        mainNav.classList.remove('is-open');
+            // Mover foco a la secciÃ³n para accesibilidad (WCAG 2.4.3)
+            if (targetId === 'imprimir' && numPaginas) {
+                setTimeout(function() { numPaginas.focus(); }, 350);
+            } else {
+                var heading = targetEl.querySelector('h1, h2, h3');
+                if (heading) {
+                    if (!heading.hasAttribute('tabindex')) {
+                        heading.setAttribute('tabindex', '-1');
                     }
-                    return;
+                    heading.focus();
+                } else {
+                    targetEl.focus();
                 }
-
-                // La sección NO existe en este documento (página legal secundaria) → navegar a la ruta SPA limpia
-                e.preventDefault();
-                window.location.href = ruta;
-                return;
             }
 
-            // Para cualquier otra ruta (aviso-legal, privacidad, etc.): navegación nativa limpia
+            // Anunciar a lectores de pantalla
+            var headingForLabel = targetEl.querySelector('h1, h2, h3');
+            var sectionLabel = targetEl.getAttribute('aria-label') || (headingForLabel ? headingForLabel.textContent : '');
+            if (sectionLabel) {
+                announceToScreenReader('SecciÃ³n: ' + sectionLabel);
+            }
+
+            // Actualizar enlace activo del nav
+            actualizarEnlaceActivoNav(href);
+
+            // Cerrar menú móvil si está abierto
+            if (menuToggle && mainNav && window.innerWidth <= 1024 && menuToggle.getAttribute('aria-expanded') === 'true') {
+                menuToggle.setAttribute('aria-expanded', 'false');
+                mainNav.classList.remove('is-open');
+            }
         });
 
-        // ScrollSpy: actualiza el enlace activo del nav según la sección visible
+        // ScrollSpy: actualiza el enlace activo del nav segÃºn la secciÃ³n visible
         if ('IntersectionObserver' in window) {
-            const spyOptions = { root: null, rootMargin: '-20% 0px -60% 0px', threshold: 0 };
+            var spyOptions = { root: null, rootMargin: '-20% 0px -60% 0px', threshold: 0 };
 
-            const sectionIds = ['imprimir', 'contacto', 'opiniones', 'quienes-somos'];
-            const spyObserver = new IntersectionObserver(function(entries) {
+            var sectionIds = ['imprimir', 'contacto', 'opiniones', 'quienes-somos'];
+            var spyObserver = new IntersectionObserver(function(entries) {
                 entries.forEach(function(entry) {
                     if (entry.isIntersecting) {
-                        actualizarEnlaceActivoNav('/' + entry.target.id);
+                        actualizarEnlaceActivoNav('#' + entry.target.id);
                     }
                 });
             }, spyOptions);
 
             sectionIds.forEach(function(id) {
-                const el = document.getElementById(id);
+                var el = document.getElementById(id);
                 if (el) spyObserver.observe(el);
             });
 
             // Hero: cuando es visible, marcar INICIO como activo
-            const heroEl = document.querySelector('.hero');
+            var heroEl = document.querySelector('.hero');
             if (heroEl) {
-                const heroObserver = new IntersectionObserver(function(entries) {
+                var heroObserver = new IntersectionObserver(function(entries) {
                     entries.forEach(function(entry) {
-                        if (entry.isIntersecting) actualizarEnlaceActivoNav('/');
+                        if (entry.isIntersecting) actualizarEnlaceActivoNav('#main-content');
                     });
                 }, spyOptions);
                 heroObserver.observe(heroEl);
             }
         }
 
-        // Handler popstate — sincroniza sección, metadatos, foco y nav al usar Atrás/Adelante — WCAG 2.4.3
-        window.addEventListener('popstate', function() {
-            const ruta = normalizarRuta(window.location.pathname);
-            const config = ROUTES_CONFIG[ruta];
-            actualizarMetadatosYRuta(ruta, config);
-            const sectionId = SECCION_MAP[ruta];
-            if (sectionId) {
-                const sectionEl = document.getElementById(sectionId);
-                if (sectionEl) {
-                    sectionEl.scrollIntoView({ behavior: 'auto', block: 'start' });
-                    moverFocoASeccion(sectionEl, sectionId);
-                }
-            } else {
-                window.scrollTo({ top: 0, behavior: 'auto' });
-                moverFocoASeccion(null, null);
+        // Si hay hash en la URL al cargar (ej. desde /#imprimir), scroll a la secciÃ³n
+        if (window.location.hash && window.location.hash.length > 1) {
+            var initialTarget = document.getElementById(window.location.hash.substring(1));
+            if (initialTarget) {
+                requestAnimationFrame(function() {
+                    initialTarget.scrollIntoView({ behavior: 'auto', block: 'start' });
+                });
             }
-            if (config && config.title) {
-                announceToScreenReader(config.title);
-            }
-        });
+        }
     }
+
 
     // ----------------------------------------------------------------
     // Header Adaptativo Sticky con Ocultación Inteligente (Smart Hide/Show)
@@ -1312,7 +1103,7 @@
             siteHeader.classList.remove('is-scrolled');
         }
 
-        // Si estamos cerca de la parte superior de la página, mostrar siempre
+        // Si estamos cerca de la parte superior de la pÃ¡gina, mostrar siempre
         if (currentScrollY <= hideThreshold) {
             siteHeader.classList.remove('header-hidden');
             lastScrollY = currentScrollY;
@@ -1320,7 +1111,7 @@
             return;
         }
 
-        // Si hay una excepción activa (foco teclado, menú móvil abierto, modal), no ocultar
+        // Si hay una excepciÃ³n activa (foco teclado, menú móvil abierto, modal), no ocultar
         if (isHeaderExemptFromHiding()) {
             siteHeader.classList.remove('header-hidden');
             lastScrollY = currentScrollY;
@@ -1350,7 +1141,7 @@
         }
     }
 
-    // Escucha pasiva para máximo rendimiento de scroll a 60/120fps
+    // Escucha pasiva para mÃ¡ximo rendimiento de scroll a 60/120fps
     window.addEventListener('scroll', onScroll, { passive: true });
 
     // Accesibilidad por teclado (WCAG 2.2 Focus Visible & Operable)
@@ -1370,7 +1161,7 @@
     }
 
     // ----------------------------------------------------------------
-    // Asignación de Event Listeners
+    // AsignaciÃ³n de Event Listeners
     // ----------------------------------------------------------------
     if (form) {
         form.addEventListener('submit', function(e) {
@@ -1461,8 +1252,8 @@
         });
     }
 
-    // headerCta (#header-cta): gestionado por el interceptor global. El router SPA
-    // detecta link.id === 'header-cta' y activa el foco en numPaginas automáticamente.
+    // headerCta (#header-cta): gestionado por el interceptor global de smooth scroll.
+    // Al hacer clic en #imprimir, el foco se mueve a numPaginas automáticamente.
 
     const contactForm = document.getElementById('contact-form');
     const contactFeedback = document.getElementById('contact-feedback');
@@ -1475,15 +1266,15 @@
             const contactMessage = document.getElementById('contact-message');
 
             if (contactName && !contactName.value.trim()) {
-                mostrarErrorContacto('⚠️ Por favor, ingresa tu nombre.', contactName);
+                mostrarErrorContacto('âš ï¸ Por favor, ingresa tu nombre.', contactName);
                 return;
             }
             if (contactEmail && (!contactEmail.value.trim() || !contactEmail.value.includes('@'))) {
-                mostrarErrorContacto('⚠️ Por favor, ingresa un correo electrónico válido.', contactEmail);
+                mostrarErrorContacto('âš ï¸ Por favor, ingresa un correo electrÃ³nico vÃ¡lido.', contactEmail);
                 return;
             }
             if (contactMessage && !contactMessage.value.trim()) {
-                mostrarErrorContacto('⚠️ Por favor, escribe tu consulta o mensaje.', contactMessage);
+                mostrarErrorContacto('âš ï¸ Por favor, escribe tu consulta o mensaje.', contactMessage);
                 return;
             }
 
@@ -1502,7 +1293,7 @@
     }
 
     // ----------------------------------------------------------------
-    // Bento Grid - duplicar tracks para bucle infinito vía JS
+    // Bento Grid - duplicar tracks para bucle infinito vÃ­a JS
     // ----------------------------------------------------------------
     document.querySelectorAll('.bento-track').forEach(function(track) {
         var clone = track.cloneNode(true);
@@ -1516,7 +1307,7 @@
             video.preload = 'none';
             video.autoplay = false;
             video.pause();
-            // Evitar que el clon inicie peticiones de red adicionales de vídeo
+            // Evitar que el clon inicie peticiones de red adicionales de vÃ­deo
             Array.from(video.querySelectorAll('source')).forEach(function(src) {
                 src.removeAttribute('src');
             });
@@ -1527,7 +1318,7 @@
         track.parentElement.appendChild(clone);
     });
 
-    // Gestión accesible y dinámica de vídeos con movimiento reducido (WCAG 2.2.2)
+    // GestiÃ³n accesible y dinÃ¡mica de vÃ­deos con movimiento reducido (WCAG 2.2.2)
     function sincronizarPreferenciaMovimiento() {
         const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         document.querySelectorAll('video.bento-video').forEach(function(vid) {
@@ -1550,7 +1341,7 @@
     }
 
     // ----------------------------------------------------------------
-    // Carga diferida bajo demanda de Stripe.js (Garantía de 0 cookies no esenciales en carga inicial)
+    // Carga diferida bajo demanda de Stripe.js (GarantÃ­a de 0 cookies no esenciales en carga inicial)
     // ----------------------------------------------------------------
     let stripeScriptCargado = false;
     function cargarStripeJsEnDemanda() {
@@ -1564,16 +1355,16 @@
             script.async = true;
             script.onload = function() {
                 stripeScriptCargado = true;
-                console.log('Stripe.js cargado dinámicamente para el paso de pago seguro.');
+                console.log('Stripe.js cargado dinÃ¡micamente para el paso de pago seguro.');
             };
             document.head.appendChild(script);
         } catch (e) {
-            console.warn('No se pudo cargar Stripe.js dinámicamente:', e);
+            console.warn('No se pudo cargar Stripe.js dinÃ¡micamente:', e);
         }
     }
 
     // ----------------------------------------------------------------
-    // Inicialización del Banner de Cookies Accesible (role="region", no modal)
+    // InicializaciÃ³n del Banner de Cookies Accesible (role="region", no modal)
     // ----------------------------------------------------------------
     function inicializarBannerCookies() {
         const cookieBanner = document.getElementById('cookie-banner');
@@ -1612,11 +1403,5 @@
     updateHeaderState();
     inicializarNavegacion();
 
-    // Si hay hash en la URL al cargar, limpiarlo sin recargar
-    if (window.location.hash) {
-        try {
-            history.replaceState(null, document.title, window.location.pathname + window.location.search);
-        } catch (e) {}
-    }
     if (modal) modal.hidden = true;
 })();

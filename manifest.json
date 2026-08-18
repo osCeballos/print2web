@@ -43,14 +43,14 @@
       "name": "Imprimir ahora",
       "short_name": "Imprimir",
       "description": "Ir directamente al formulario de impresión",
-      "url": "/imprimir",
+      "url": "/#imprimir",
       "icons": [{ "src": "img/icon-192.webp", "sizes": "192x192" }]
     },
     {
       "name": "Contactar",
       "short_name": "Contacto",
       "description": "Contactar con la imprenta Tramas",
-      "url": "/contacto",
+      "url": "/#contacto",
       "icons": [{ "src": "img/icon-192.webp", "sizes": "192x192" }]
     }
   ]
