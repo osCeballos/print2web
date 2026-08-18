@@ -1899,8 +1899,9 @@ picture{ display: contents; }
    ========================================================================== */
 .status-page-body {
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
   min-height: 100vh;
   background-color: var(--white, #ffffff);
   background-image: radial-gradient(rgba(0, 0, 0, 0.04) 1.2px, transparent 1.2px);
@@ -1919,6 +1920,7 @@ picture{ display: contents; }
   width: 90%;
   position: relative;
   overflow: hidden;
+  margin: auto auto;
   animation: statusSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -1959,6 +1961,7 @@ picture{ display: contents; }
   to { stroke-dashoffset: 0; }
 }
 
+.status-card h1,
 .status-card h2 {
   font-size: 2rem;
   font-weight: 800;
@@ -2014,6 +2017,17 @@ picture{ display: contents; }
 .status-desc-sub {
   color: #666666;
   margin-bottom: 2rem;
+}
+
+@media (max-width: 600px) {
+  .status-card {
+    padding: 2.5rem 1.5rem;
+    margin: 2rem auto;
+  }
+  .status-card h1,
+  .status-card h2 {
+    font-size: 1.5rem;
+  }
 }
 
 /* Clases auxiliares sin inline styles para index.html */
@@ -2271,12 +2285,15 @@ picture{ display: contents; }
 
 /* Estilos específicos para footer en páginas de estado (éxito y cancelado) */
 .status-footer {
+  width: 100%;
   display: block;
-  padding: 30px 40px;
+  padding: 24px 40px;
   background: var(--near-black);
+  margin-top: auto;
 }
 .status-footer .footer-legal-links {
-  margin-top: 0;
+  max-width: var(--container, 1240px);
+  margin: 0 auto;
   padding-top: 0;
   border-top: none;
 }
