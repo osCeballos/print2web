@@ -1,79 +1,9 @@
 (function() {
     'use strict';
 
-    // Inyección dinámica de datos estructurados JSON-LD (Schema.org)
-    try {
-        const schemaScript = document.createElement('script');
-        schemaScript.type = 'application/ld+json';
-        schemaScript.textContent = JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": ["LocalBusiness", "PrintShop"],
-            "name": "Print2Web - Tramas Solucions Gràfiques SL",
-            "legalName": "Tramas Solucions Gràfiques SL",
-            "description": "Imprenta digital y copistería online con taller propio en Sant Just Desvern (Barcelona). Impresión de documentos A4, encuadernación, catálogos y gran formato desde 2008.",
-            "url": "https://tramasweb.com/",
-            "telephone": "+34933722949",
-            "email": "info@tramasweb.com",
-            "foundingDate": "2008",
-            "image": "https://tramasweb.com/img/og-image.webp",
-            "logo": "https://tramasweb.com/img/logotipo.svg",
-            "priceRange": "€€",
-            "currenciesAccepted": "EUR",
-            "paymentAccepted": ["Cash", "Credit Card", "Bizum", "Apple Pay", "Google Pay"],
-            "address": {
-                "@type": "PostalAddress",
-                "streetAddress": "Carretera Reial, 15-17, Primer Local",
-                "addressLocality": "Sant Just Desvern",
-                "addressRegion": "Barcelona",
-                "postalCode": "08960",
-                "addressCountry": "ES"
-            },
-            "geo": {
-                "@type": "GeoCoordinates",
-                "latitude": 41.3838,
-                "longitude": 2.0731
-            },
-            "hasMap": "https://maps.google.com/maps?q=Carretera+Reial+15,+Sant+Just+Desvern",
-            "areaServed": [
-                { "@type": "City", "name": "Sant Just Desvern" },
-                { "@type": "City", "name": "Barcelona" },
-                { "@type": "AdministrativeArea", "name": "Baix Llobregat" }
-            ],
-            "hasOfferCatalog": {
-                "@type": "OfferCatalog",
-                "name": "Servicios de Imprenta Digital",
-                "itemListElement": [
-                    {
-                        "@type": "Offer",
-                        "itemOffered": {
-                            "@type": "Service",
-                            "name": "Impresión Digital A4 y Documentos",
-                            "description": "Impresión de documentos en A4 a color y blanco y negro con opción de encuadernación en espiral."
-                        }
-                    },
-                    {
-                        "@type": "Offer",
-                        "itemOffered": {
-                            "@type": "Service",
-                            "name": "Impresión de Catálogos y Revistas",
-                            "description": "Maquetación e impresión editorial de catálogos, revistas y dossiers corporativos."
-                        }
-                    },
-                    {
-                        "@type": "Offer",
-                        "itemOffered": {
-                            "@type": "Service",
-                            "name": "Gran Formato y Cartelería",
-                            "description": "Impresión de carteles, vinilos y lonas publicitarias para comercios y eventos."
-                        }
-                    }
-                ]
-            }
-        });
-        document.head.appendChild(schemaScript);
-    } catch (e) {
-        console.warn('Error al inyectar JSON-LD:', e);
-    }
+    // JSON-LD LocalBusiness/PrintShop declarado estáticamente en el <head> de index.html
+    // (Movido de inyección dinámica a HTML estático para compatibilidad total con crawlers
+    //  estáticos, Search Console Rich Results Test y Googlebot sin render JS — SEO audit P3)
 
     let currentOrderId = null;
 
@@ -103,7 +33,7 @@
     }
 
     // ----------------------------------------------------------------
-    // Referencias DOM principales del formulario de impresión
+    // Referencias DOM principales del formulario de impresión y contacto
     // ----------------------------------------------------------------
     const form = document.getElementById('print-form');
     const numPaginas = document.getElementById('num-paginas');
@@ -113,9 +43,11 @@
     const encuadernado = document.getElementById('encuadernado');
     const envio = document.getElementById('envio');
     const fileInput = document.getElementById('file-input');
+    const fileInfoContainer = document.getElementById('file-info-container');
     const fileNameSpan = document.getElementById('file-name');
     const removeFileBtn = document.getElementById('remove-file-btn');
     const formErrorMsg = document.getElementById('form-error-msg');
+    const contactErrorMsg = document.getElementById('contact-error-msg');
     const totalAmountSpan = document.getElementById('total-amount');
     const addFileBtn = document.getElementById('add-file-btn');
     const comprarBtn = document.getElementById('comprar-btn');
@@ -179,9 +111,31 @@
     let selectedPaymentMethod = 'bizum';
     let currentOrderData = null;
 
-    // Configurar worker de PDF.js si está disponible
-    if (window.pdfjsLib) {
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    // Carga dinámica bajo demanda de PDF.js (0 bytes y 0 tiempo de parseo en carga inicial)
+    let pdfJsLoadingPromise = null;
+    function cargarPdfJsEnDemanda() {
+        if (window.pdfjsLib) {
+            return Promise.resolve(window.pdfjsLib);
+        }
+        if (pdfJsLoadingPromise) {
+            return pdfJsLoadingPromise;
+        }
+        pdfJsLoadingPromise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+            script.async = true;
+            script.onload = () => {
+                if (window.pdfjsLib) {
+                    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                    resolve(window.pdfjsLib);
+                } else {
+                    reject(new Error('PDF.js no disponible'));
+                }
+            };
+            script.onerror = (err) => reject(err);
+            document.head.appendChild(script);
+        });
+        return pdfJsLoadingPromise;
     }
 
     // Precios Base
@@ -315,12 +269,10 @@
         const reader = new FileReader();
         reader.onload = function(e) {
             const typedarray = new Uint8Array(e.target.result);
-            if (!window.pdfjsLib) {
-                mostrarTarjetaDocumento(file.name);
-                return;
-            }
 
-            pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+            cargarPdfJsEnDemanda().then(function(pdfjsLib) {
+                return pdfjsLib.getDocument(typedarray).promise;
+            }).then(function(pdf) {
                 if (numPaginas && pdf.numPages) {
                     numPaginas.value = pdf.numPages;
                     actualizarTotal();
@@ -380,6 +332,18 @@
         }
     }
 
+    function actualizarNombreArchivo() {
+        if (!fileNameSpan || !fileInfoContainer) return;
+        const files = fileInput && fileInput.files ? fileInput.files : null;
+        if (files && files.length > 0) {
+            fileNameSpan.textContent = files[0].name;
+            fileInfoContainer.hidden = false;
+        } else {
+            fileNameSpan.textContent = 'Ningún archivo seleccionado';
+            fileInfoContainer.hidden = true;
+        }
+    }
+
     function actualizarPrevisualizacionMockup() {
         if (!fileInput) return;
         const files = fileInput.files;
@@ -388,6 +352,8 @@
             URL.revokeObjectURL(currentObjectUrl);
             currentObjectUrl = null;
         }
+
+        actualizarNombreArchivo();
 
         if (!files || files.length === 0) {
             if (numPaginas) numPaginas.value = 1;
@@ -484,6 +450,36 @@
         formErrorMsg.textContent = '';
         if (form) {
             form.querySelectorAll('[aria-invalid]').forEach(el => {
+                el.removeAttribute('aria-invalid');
+                el.removeAttribute('aria-describedby');
+            });
+        }
+    }
+
+    // Gestión accesible e independiente de errores del formulario de contacto
+    function mostrarErrorContacto(mensaje, targetInput) {
+        if (!contactErrorMsg) return;
+        contactErrorMsg.textContent = mensaje;
+        contactErrorMsg.hidden = false;
+        if (targetInput) {
+            ocultarErrorContacto();
+            contactErrorMsg.hidden = false;
+            contactErrorMsg.textContent = mensaje;
+            targetInput.setAttribute('aria-invalid', 'true');
+            targetInput.setAttribute('aria-describedby', 'contact-error-msg');
+            targetInput.focus();
+        }
+        announceToScreenReader(mensaje);
+        contactErrorMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function ocultarErrorContacto() {
+        if (!contactErrorMsg) return;
+        contactErrorMsg.hidden = true;
+        contactErrorMsg.textContent = '';
+        const contactFormEl = document.getElementById('contact-form');
+        if (contactFormEl) {
+            contactFormEl.querySelectorAll('[aria-invalid]').forEach(el => {
                 el.removeAttribute('aria-invalid');
                 el.removeAttribute('aria-describedby');
             });
@@ -619,18 +615,45 @@
         const envText = (envio && envio.checked) ? 'Envío a domicilio (+5,00€)' : 'Recogida presencial gratuita';
         const fileName = (fileInput && fileInput.files && fileInput.files.length > 0) ? fileInput.files[0].name : 'Documento';
 
-        modalDetailSummary.innerHTML = `
-            <p><strong>Archivo adjunto:</strong> ${fileName}</p>
-            <p><strong>Formato de papel:</strong> A4 Estándar (210 x 297 mm)</p>
-            <p><strong>Páginas por ejemplar:</strong> ${numP} pág${numP > 1 ? 's' : ''}</p>
-            <p><strong>Ejemplares (Copias):</strong> ${copias}</p>
-            <p><strong>Modo de color:</strong> ${color}</p>
-            <p><strong>Caras de impresión:</strong> ${diapo}</p>
-            <p><strong>Encuadernación espiral:</strong> ${enc}</p>
-            <p><strong>Opción de entrega actual:</strong> ${envText}</p>
-            <hr class="modal-summary-hr">
-            <p class="modal-summary-total-p"><strong>Total estimado:</strong> <span class="modal-summary-total-amount">${total.toFixed(2)} €</span></p>
-        `;
+        // Construcción segura del DOM sin interpolación no confiable en innerHTML (SEC-01)
+        modalDetailSummary.textContent = '';
+
+        const items = [
+            { label: 'Archivo adjunto:', value: fileName },
+            { label: 'Formato de papel:', value: 'A4 Estándar (210 x 297 mm)' },
+            { label: 'Páginas por ejemplar:', value: `${numP} pág${numP > 1 ? 's' : ''}` },
+            { label: 'Ejemplares (Copias):', value: `${copias}` },
+            { label: 'Modo de color:', value: color },
+            { label: 'Caras de impresión:', value: diapo },
+            { label: 'Encuadernación espiral:', value: enc },
+            { label: 'Opción de entrega actual:', value: envText }
+        ];
+
+        items.forEach(function(item) {
+            const p = document.createElement('p');
+            const strong = document.createElement('strong');
+            strong.textContent = item.label + ' ';
+            p.appendChild(strong);
+            p.appendChild(document.createTextNode(item.value));
+            modalDetailSummary.appendChild(p);
+        });
+
+        const hr = document.createElement('hr');
+        hr.className = 'modal-summary-hr';
+        modalDetailSummary.appendChild(hr);
+
+        const totalP = document.createElement('p');
+        totalP.className = 'modal-summary-total-p';
+        const totalStrong = document.createElement('strong');
+        totalStrong.textContent = 'Total estimado: ';
+        totalP.appendChild(totalStrong);
+
+        const totalSpan = document.createElement('span');
+        totalSpan.className = 'modal-summary-total-amount';
+        totalSpan.textContent = `${total.toFixed(2)} €`;
+        totalP.appendChild(totalSpan);
+
+        modalDetailSummary.appendChild(totalP);
     }
 
     // Modalidad de Entrega (Envío vs Recogida)
@@ -878,7 +901,7 @@
     const skipLink = document.querySelector('.skip-link');
 
     // ----------------------------------------------------------------
-    // Control del Menú Hamburguesa Móvil (WCAG 4.1.2)
+    // Control del Menú Hamburguesa Móvil (WCAG 4.1.2, 2.1.1 & 2.1.2)
     // ----------------------------------------------------------------
     const menuToggle = document.getElementById('menu-toggle');
     const mainNav = document.getElementById('main-nav');
@@ -896,7 +919,15 @@
             }
         });
 
-        // Nota: el cierre del menú al pulsar enlace lo gestiona el interceptor global de clics.
+        // Soporte de tecla Escape para cerrar menú móvil si está desplegado
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && menuToggle.getAttribute('aria-expanded') === 'true') {
+                menuToggle.setAttribute('aria-expanded', 'false');
+                mainNav.classList.remove('is-open');
+                menuToggle.focus();
+                announceToScreenReader('Menú de navegación cerrado');
+            }
+        });
     }
 
     // ----------------------------------------------------------------
@@ -906,7 +937,7 @@
         '/': {
             id: 'inicio',
             sectionId: null,
-            title: 'Print2Web - Impresión Online A4',
+            title: 'Imprenta Digital en Sant Just Desvern | Print2Web',
             description: 'Impresión digital rápida y profesional en Sant Just Desvern (Barcelona). Configura y encarga online tus impresiones A4, catálogos y dossieres con taller propio.',
             canonical: 'https://tramasweb.com/',
             ogImage: 'https://tramasweb.com/img/og-image.webp',
@@ -970,6 +1001,18 @@
         });
     }
 
+    // Cache de referencias a etiquetas meta/link para máxima velocidad en transiciones SPA
+    const metaElementsCache = {
+        metaDesc: document.querySelector('meta[name="description"]'),
+        canonicalLink: document.querySelector('link[rel="canonical"]'),
+        ogUrl: document.querySelector('meta[property="og:url"]'),
+        ogTitle: document.querySelector('meta[property="og:title"]'),
+        ogDesc: document.querySelector('meta[property="og:description"]'),
+        twTitle: document.querySelector('meta[name="twitter:title"]'),
+        twDesc: document.querySelector('meta[name="twitter:description"]'),
+        twUrl: document.querySelector('meta[name="twitter:url"]')
+    };
+
     function actualizarMetadatosYRuta(ruta, config) {
         if (!config) return;
 
@@ -977,45 +1020,71 @@
             document.title = config.title;
         }
 
-        const metaDesc = document.querySelector('meta[name="description"]');
-        if (metaDesc && config.description) {
-            metaDesc.setAttribute('content', config.description);
+        if (metaElementsCache.metaDesc && config.description) {
+            metaElementsCache.metaDesc.setAttribute('content', config.description);
         }
-
-        const canonicalLink = document.querySelector('link[rel="canonical"]');
-        if (canonicalLink && config.canonical) {
-            canonicalLink.setAttribute('href', config.canonical);
+        if (metaElementsCache.canonicalLink && config.canonical) {
+            metaElementsCache.canonicalLink.setAttribute('href', config.canonical);
         }
-
-        const ogUrl = document.querySelector('meta[property="og:url"]');
-        if (ogUrl && config.canonical) ogUrl.setAttribute('content', config.canonical);
-
-        const ogTitle = document.querySelector('meta[property="og:title"]');
-        if (ogTitle && config.title) ogTitle.setAttribute('content', config.title);
-
-        const ogDesc = document.querySelector('meta[property="og:description"]');
-        if (ogDesc && config.description) ogDesc.setAttribute('content', config.description);
-
-        const twTitle = document.querySelector('meta[name="twitter:title"]');
-        if (twTitle && config.title) twTitle.setAttribute('content', config.title);
-
-        const twDesc = document.querySelector('meta[name="twitter:description"]');
-        if (twDesc && config.description) twDesc.setAttribute('content', config.description);
-
-        const twUrl = document.querySelector('meta[name="twitter:url"]');
-        if (twUrl && config.canonical) twUrl.setAttribute('content', config.canonical);
+        if (metaElementsCache.ogUrl && config.canonical) {
+            metaElementsCache.ogUrl.setAttribute('content', config.canonical);
+        }
+        if (metaElementsCache.ogTitle && config.title) {
+            metaElementsCache.ogTitle.setAttribute('content', config.title);
+        }
+        if (metaElementsCache.ogDesc && config.description) {
+            metaElementsCache.ogDesc.setAttribute('content', config.description);
+        }
+        if (metaElementsCache.twTitle && config.title) {
+            metaElementsCache.twTitle.setAttribute('content', config.title);
+        }
+        if (metaElementsCache.twDesc && config.description) {
+            metaElementsCache.twDesc.setAttribute('content', config.description);
+        }
+        if (metaElementsCache.twUrl && config.canonical) {
+            metaElementsCache.twUrl.setAttribute('content', config.canonical);
+        }
 
         actualizarEnlaceActivoNav(config.navKey);
     }
 
+    // Gestión accesible del foco al navegar entre secciones SPA (WCAG 2.4.3)
+    function moverFocoASeccion(sectionEl, sectionId) {
+        if (!sectionEl && !sectionId) {
+            const mainContent = document.getElementById('main-content');
+            if (mainContent) {
+                mainContent.focus();
+            }
+            return;
+        }
+
+        if (sectionId === 'imprimir') {
+            if (numPaginas) {
+                setTimeout(() => numPaginas.focus(), 350);
+            }
+            return;
+        }
+
+        // Buscar encabezado dentro de la sección o enfocar el contenedor con tabindex="-1"
+        const heading = sectionEl ? sectionEl.querySelector('h1, h2, h3') : null;
+        if (heading) {
+            if (!heading.hasAttribute('tabindex')) {
+                heading.setAttribute('tabindex', '-1');
+            }
+            heading.focus();
+        } else if (sectionEl) {
+            sectionEl.focus();
+        }
+    }
+
     function navegarARuta(ruta, opciones) {
-        const opt = Object.assign({ pushState: true, smooth: true, focus: false }, opciones || {});
+        const opt = Object.assign({ pushState: true, smooth: true, focus: true }, opciones || {});
         const normalizada = normalizarRuta(ruta);
         let config = ROUTES_CONFIG[normalizada];
 
         // Manejo de rutas no definidas -> fallback seguro a inicio
         if (!config) {
-            navegarARuta('/', { pushState: opt.pushState, smooth: false });
+            navegarARuta('/', { pushState: opt.pushState, smooth: false, focus: opt.focus });
             return false;
         }
 
@@ -1028,31 +1097,36 @@
         }
 
         actualizarMetadatosYRuta(normalizada, config);
+        if (config.title) {
+            announceToScreenReader(config.title);
+        }
 
         if (config.sectionId) {
             const section = document.getElementById(config.sectionId);
             if (section) {
-                section.scrollIntoView({ behavior: opt.smooth ? 'smooth' : 'auto', block: 'start' });
-                if (opt.focus || config.sectionId === 'imprimir') {
-                    if (numPaginas) setTimeout(() => numPaginas.focus(), 350);
+                const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                section.scrollIntoView({ behavior: (opt.smooth && !prefersReduced) ? 'smooth' : 'auto', block: 'start' });
+                if (opt.focus) {
+                    moverFocoASeccion(section, config.sectionId);
                 }
             }
         } else {
-            window.scrollTo({ top: 0, behavior: opt.smooth ? 'smooth' : 'auto' });
+            const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            window.scrollTo({ top: 0, behavior: (opt.smooth && !prefersReduced) ? 'smooth' : 'auto' });
+            if (opt.focus) {
+                moverFocoASeccion(null, null);
+            }
         }
 
         return true;
     }
 
     function navigate(route, addToHistory = true) {
-        return navegarARuta(route, { pushState: addToHistory, smooth: true });
+        return navegarARuta(route, { pushState: addToHistory, smooth: true, focus: true });
     }
 
     // ----------------------------------------------------------------
-    // Navegación interna: Smooth Scroll sin modificar la URL
-    // Los enlaces del navbar (/imprimir, /contacto, etc.) hacen scroll
-    // a la sección correspondiente. La URL NUNCA cambia.
-    // Para páginas externas (aviso-legal, etc.) navegan de forma nativa.
+    // Navegación interna: Smooth Scroll con History API accesible
     // ----------------------------------------------------------------
     function inicializarNavegacion() {
         // Mapa: ruta limpia → id de sección en index.html
@@ -1064,7 +1138,24 @@
             '/quienes-somos': 'quienes-somos'
         };
 
-        // Interceptor global de clics (delegación de eventos)
+        // Deep Linking en carga inicial: sincronización inmediata sin retraso artificial (elimina FOUC/salto visual)
+        const initialPath = normalizarRuta(window.location.pathname);
+        if (initialPath !== '/' && Object.prototype.hasOwnProperty.call(SECCION_MAP, initialPath)) {
+            const initialSectionId = SECCION_MAP[initialPath];
+            const initialSectionEl = initialSectionId ? document.getElementById(initialSectionId) : null;
+            if (initialSectionEl) {
+                requestAnimationFrame(function() {
+                    initialSectionEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+                    moverFocoASeccion(initialSectionEl, initialSectionId);
+                    const initConfig = ROUTES_CONFIG[initialPath];
+                    if (initConfig && initConfig.title) {
+                        announceToScreenReader(initConfig.title);
+                    }
+                });
+            }
+        }
+
+        // Interceptor global de clics (delegación de eventos hacia navegarARuta)
         document.addEventListener('click', function(e) {
             const link = e.target.closest('a');
             if (!link) return;
@@ -1075,8 +1166,9 @@
             // Dejar pasar el skip-link de accesibilidad
             if (link.classList.contains('skip-link')) return;
 
-            // Dejar pasar enlaces externos, mailto, tel y target="_blank"
+            // Dejar pasar enlaces externos, protocol-relative, mailto, tel y target="_blank"
             if (
+                href.startsWith('//') ||
                 href.startsWith('mailto:') ||
                 href.startsWith('tel:') ||
                 href.startsWith('http://') ||
@@ -1100,31 +1192,12 @@
 
             // ¿Es una ruta del SPA (sección de index.html)?
             if (Object.prototype.hasOwnProperty.call(SECCION_MAP, ruta)) {
-                // Solo actuar si la sección existe en este documento
                 const sectionId = SECCION_MAP[ruta];
                 const sectionEl = sectionId ? document.getElementById(sectionId) : null;
 
                 if (ruta === '/' || sectionEl) {
-                    e.preventDefault(); // Evitar navegación y cualquier cambio en la URL
-
-                    // Scroll visual puro: la URL NO cambia
-                    if (sectionEl) {
-                        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                        sectionEl.scrollIntoView({
-                            behavior: prefersReduced ? 'auto' : 'smooth',
-                            block: 'start'
-                        });
-                        // Foco especial para la sección de imprimir
-                        if (sectionId === 'imprimir' || link.id === 'header-cta') {
-                            if (numPaginas) setTimeout(function() { numPaginas.focus(); }, 350);
-                        }
-                    } else {
-                        // Inicio: scroll al top
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }
-
-                    // Actualizar enlace activo en el nav (sólo visual)
-                    actualizarEnlaceActivoNav(ruta);
+                    e.preventDefault();
+                    navegarARuta(ruta, { pushState: true, smooth: true, focus: true });
 
                     // Cerrar menú móvil si está abierto
                     if (menuToggle && mainNav && window.innerWidth <= 1024 && menuToggle.getAttribute('aria-expanded') === 'true') {
@@ -1134,9 +1207,9 @@
                     return;
                 }
 
-                // La sección NO existe en este documento (página legal) → navegar a /
+                // La sección NO existe en este documento (página legal secundaria) → navegar a la ruta SPA limpia
                 e.preventDefault();
-                window.location.href = '/';
+                window.location.href = ruta;
                 return;
             }
 
@@ -1144,7 +1217,6 @@
         });
 
         // ScrollSpy: actualiza el enlace activo del nav según la sección visible
-        // No modifica la URL, solo el estado visual
         if ('IntersectionObserver' in window) {
             const spyOptions = { root: null, rootMargin: '-20% 0px -60% 0px', threshold: 0 };
 
@@ -1173,6 +1245,27 @@
                 heroObserver.observe(heroEl);
             }
         }
+
+        // Handler popstate — sincroniza sección, metadatos, foco y nav al usar Atrás/Adelante — WCAG 2.4.3
+        window.addEventListener('popstate', function() {
+            const ruta = normalizarRuta(window.location.pathname);
+            const config = ROUTES_CONFIG[ruta];
+            actualizarMetadatosYRuta(ruta, config);
+            const sectionId = SECCION_MAP[ruta];
+            if (sectionId) {
+                const sectionEl = document.getElementById(sectionId);
+                if (sectionEl) {
+                    sectionEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+                    moverFocoASeccion(sectionEl, sectionId);
+                }
+            } else {
+                window.scrollTo({ top: 0, behavior: 'auto' });
+                moverFocoASeccion(null, null);
+            }
+            if (config && config.title) {
+                announceToScreenReader(config.title);
+            }
+        });
     }
 
     // ----------------------------------------------------------------
@@ -1355,6 +1448,19 @@
         });
     }
 
+    if (removeFileBtn) {
+        removeFileBtn.addEventListener('click', function() {
+            if (fileInput) {
+                fileInput.value = '';
+            }
+            actualizarNombreArchivo();
+            actualizarPrevisualizacionMockup();
+            actualizarTotal();
+            if (addFileBtn) addFileBtn.focus();
+            announceToScreenReader('Archivo eliminado.');
+        });
+    }
+
     // headerCta (#header-cta): gestionado por el interceptor global. El router SPA
     // detecta link.id === 'header-cta' y activa el foco en numPaginas automáticamente.
 
@@ -1369,19 +1475,19 @@
             const contactMessage = document.getElementById('contact-message');
 
             if (contactName && !contactName.value.trim()) {
-                mostrarErrorFormulario('⚠️ Por favor, ingresa tu nombre.', contactName);
+                mostrarErrorContacto('⚠️ Por favor, ingresa tu nombre.', contactName);
                 return;
             }
             if (contactEmail && (!contactEmail.value.trim() || !contactEmail.value.includes('@'))) {
-                mostrarErrorFormulario('⚠️ Por favor, ingresa un correo electrónico válido.', contactEmail);
+                mostrarErrorContacto('⚠️ Por favor, ingresa un correo electrónico válido.', contactEmail);
                 return;
             }
             if (contactMessage && !contactMessage.value.trim()) {
-                mostrarErrorFormulario('⚠️ Por favor, escribe tu consulta o mensaje.', contactMessage);
+                mostrarErrorContacto('⚠️ Por favor, escribe tu consulta o mensaje.', contactMessage);
                 return;
             }
 
-            ocultarErrorFormulario();
+            ocultarErrorContacto();
             if (contactFeedback) {
                 contactFeedback.hidden = false;
                 announceToScreenReader(contactFeedback.textContent);
@@ -1391,6 +1497,8 @@
                 }, 5000);
             }
         });
+
+        contactForm.addEventListener('input', ocultarErrorContacto);
     }
 
     // ----------------------------------------------------------------
@@ -1405,6 +1513,13 @@
         });
         clone.querySelectorAll('video').forEach(function(video) {
             video.setAttribute('aria-hidden', 'true');
+            video.preload = 'none';
+            video.autoplay = false;
+            video.pause();
+            // Evitar que el clon inicie peticiones de red adicionales de vídeo
+            Array.from(video.querySelectorAll('source')).forEach(function(src) {
+                src.removeAttribute('src');
+            });
             Array.from(video.childNodes).forEach(function(node) {
                 if (node.nodeType === Node.TEXT_NODE) video.removeChild(node);
             });
@@ -1412,11 +1527,26 @@
         track.parentElement.appendChild(clone);
     });
 
-    // Desactivar reproducción de vídeo si la preferencia de movimiento reducido está activada (WCAG 2.2.2)
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // Gestión accesible y dinámica de vídeos con movimiento reducido (WCAG 2.2.2)
+    function sincronizarPreferenciaMovimiento() {
+        const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         document.querySelectorAll('video.bento-video').forEach(function(vid) {
-            vid.pause();
+            if (reduceMotion) {
+                vid.pause();
+            } else {
+                vid.play().catch(function() {});
+            }
         });
+    }
+
+    if (window.matchMedia) {
+        const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        sincronizarPreferenciaMovimiento();
+        if (typeof motionQuery.addEventListener === 'function') {
+            motionQuery.addEventListener('change', sincronizarPreferenciaMovimiento);
+        } else if (typeof motionQuery.addListener === 'function') {
+            motionQuery.addListener(sincronizarPreferenciaMovimiento);
+        }
     }
 
     // ----------------------------------------------------------------

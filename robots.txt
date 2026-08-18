@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /exito
+Disallow: /cancelado
+Disallow: /api/
 
 Sitemap: https://tramasweb.com/sitemap.xml

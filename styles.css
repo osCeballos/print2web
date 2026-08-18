@@ -34,6 +34,14 @@ html{ scroll-behavior: smooth; }
   html {
     scroll-behavior: auto;
   }
+  .bento-track {
+    animation: none !important;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Offset para scroll con cabecera sticky/fija */
@@ -116,6 +124,18 @@ picture{ display: contents; }
   outline: 3px solid var(--cyan-dark);
   outline-offset: 3px;
   box-shadow: 0 0 0 2px var(--white);
+}
+
+/* WCAG 2.4.7 & 1.4.11: Foco visible de alto contraste para áreas oscuras (>9:1 sobre negro) */
+.site-header :focus-visible,
+.site-footer :focus-visible,
+.cookie-banner :focus-visible,
+.testimonial-featured :focus-visible,
+.btn-solid:focus-visible,
+.btn-pill-solid:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 2px var(--black);
 }
 
 /* =========================================================
@@ -958,12 +978,53 @@ picture{ display: contents; }
   max-width: 46ch;
 }
 
+.file-info-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-left: 3px solid var(--cyan-dark);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  margin-top: 10px;
+  margin-bottom: 4px;
+}
+
+.file-info-bar[hidden] {
+  display: none !important;
+}
+
 .file-name-text {
-  display: block;
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--gray-700);
-  margin-top: 12px;
+  color: var(--black);
+  word-break: break-all;
+}
+
+.file-remove-btn {
+  background: none;
+  border: none;
+  color: var(--gray-500);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  min-width: 32px;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.file-remove-btn:hover,
+.file-remove-btn:focus-visible {
+  color: #dc2626;
+  background-color: rgba(220, 38, 38, 0.1);
 }
 
 .total-display {
@@ -1451,6 +1512,27 @@ picture{ display: contents; }
   max-width: var(--container);
   margin-inline: auto;
   padding: var(--section-padding-v) 40px;
+}
+
+.section-header {
+  margin-bottom: 40px;
+}
+.section-header.text-center {
+  text-align: center;
+}
+.section-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--black);
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+.section-subtitle {
+  font-size: 1rem;
+  color: var(--gray-600);
+  max-width: 580px;
+  margin-inline: auto;
+  line-height: 1.5;
 }
 
 .testimonials-grid {

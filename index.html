@@ -34,6 +34,7 @@
 <meta name="twitter:description" content="Imprenta digital en Sant Just Desvern y Barcelona. Envía tus archivos PDF, configura tu pedido online e imprimimos con taller propio en 24h.">
 <meta name="twitter:image" content="https://tramasweb.com/img/og-image.webp">
 <meta name="twitter:image:alt" content="Print2Web - Imprenta digital en Sant Just Desvern">
+<meta name="twitter:url" content="https://tramasweb.com/">
 
 <!-- Estilos Principales -->
 <link rel="stylesheet" href="styles.css">
@@ -43,6 +44,76 @@
 <link rel="icon" href="img/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="img/favicon.png">
 <link rel="manifest" href="manifest.json">
+
+<!-- Datos Estructurados JSON-LD estáticos (Schema.org LocalBusiness + PrintShop) -->
+<!-- Declarado en HTML para compatibilidad total con crawlers estáticos y Search Console -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["LocalBusiness", "PrintShop"],
+  "name": "Print2Web - Tramas Solucions Gràfiques SL",
+  "legalName": "Tramas Solucions Gràfiques SL",
+  "description": "Imprenta digital y copistería online con taller propio en Sant Just Desvern (Barcelona). Impresión de documentos A4, encuadernación, catálogos y gran formato desde 2008.",
+  "url": "https://tramasweb.com/",
+  "telephone": "+34933722949",
+  "email": "info@tramasweb.com",
+  "foundingDate": "2008",
+  "image": "https://tramasweb.com/img/og-image.webp",
+  "logo": "https://tramasweb.com/img/logotipo.svg",
+  "priceRange": "\u20ac\u20ac",
+  "currenciesAccepted": "EUR",
+  "paymentAccepted": ["Cash", "Credit Card", "Bizum", "Apple Pay", "Google Pay"],
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Carretera Reial, 15-17, Primer Local",
+    "addressLocality": "Sant Just Desvern",
+    "addressRegion": "Barcelona",
+    "postalCode": "08960",
+    "addressCountry": "ES"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 41.3838,
+    "longitude": 2.0731
+  },
+  "hasMap": "https://maps.google.com/maps?q=Carretera+Reial+15,+Sant+Just+Desvern",
+  "areaServed": [
+    { "@type": "City", "name": "Sant Just Desvern" },
+    { "@type": "City", "name": "Barcelona" },
+    { "@type": "AdministrativeArea", "name": "Baix Llobregat" }
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Servicios de Imprenta Digital",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Impresión Digital A4 y Documentos",
+          "description": "Impresión de documentos en A4 a color y blanco y negro con opción de encuadernación en espiral."
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Impresión de Catálogos y Revistas",
+          "description": "Maquetación e impresión editorial de catálogos, revistas y dossiers corporativos."
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Gran Formato y Cartelería",
+          "description": "Impresión de carteles, vinilos y lonas publicitarias para comercios y eventos."
+        }
+      }
+    ]
+  }
+}
+</script>
 </head>
 <body>
 
@@ -55,7 +126,7 @@
 <!-- ===== HEADER ===== -->
 <header class="site-header">
   <a href="/" class="logo-link" aria-label="Ir al inicio de Print2Web">
-    <img src="img/logotipo.svg" alt="Print2Web - Tramas Solucions Gràfiques SL" class="header-logo-img">
+    <img src="img/logotipo.svg" alt="Print2Web - Tramas Solucions Gràfiques SL" class="header-logo-img" width="160" height="38">
   </a>
 
   <!-- Menú hamburguesa para móvil -->
@@ -64,9 +135,9 @@
   </button>
 
   <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
-    <a href="/">INICIO</a>
+    <a href="/" aria-current="page" class="active">INICIO</a>
     <a href="/imprimir">IMPRIMIR</a>
-    <a href="/contacto">CONTACTAR</a>
+    <a href="/contacto">CONTACTO</a>
     <a href="/opiniones">OPINIONES</a>
     <a href="/quienes-somos">QUIÉNES SOMOS</a>
   </nav>
@@ -107,13 +178,13 @@
               <img src="img/hero-bento-1.webp" alt="Catálogos editoriales e impresión de revistas en Sant Just Desvern" width="400" height="300" loading="eager" decoding="async">
             </div>
             <div class="bento-card bento-card-3">
-              <img src="img/hero-bento-3.webp" alt="Dossieres y folletos corporativos impresos con tintas ecológicas" width="400" height="400" loading="eager" decoding="async">
+              <img src="img/hero-bento-3.webp" alt="Dossieres y folletos corporativos impresos con tintas ecológicas" width="400" height="400" loading="lazy" decoding="async">
             </div>
             <div class="bento-card bento-card-5">
-              <img src="img/hero-bento-5.webp" alt="Encuadernación espiral de catálogos y libretas en taller propio" width="400" height="300" loading="eager" decoding="async">
+              <img src="img/hero-bento-5.webp" alt="Encuadernación espiral de catálogos y libretas en taller propio" width="400" height="300" loading="lazy" decoding="async">
             </div>
             <div class="bento-card bento-card-7">
-              <img src="img/hero-bento-7.webp" alt="Impresión de tarjetas de visita corporativas en Barcelona" width="400" height="300" loading="eager" decoding="async">
+              <img src="img/hero-bento-7.webp" alt="Impresión de tarjetas de visita corporativas en Barcelona" width="400" height="300" loading="lazy" decoding="async">
             </div>
         <!-- Set 2 lo genera script.js clonando este track (reduce DOM inicial) -->
           </div>
@@ -123,21 +194,19 @@
         <div class="bento-column bento-column-down">
         <div class="bento-track">
             <div class="bento-card bento-card-2">
-              <video autoplay loop muted playsinline poster="img/hero-bento-2.webp" class="bento-video" aria-hidden="true">
-                <source src="img/office_printer.webm" type="video/webm">
-                <source src="img/office_printer.mp4" type="video/mp4">
+              <video autoplay loop muted playsinline preload="metadata" poster="img/hero-bento-2.webp" class="bento-video" aria-hidden="true">
                 <source src="img/0_Office_Printer_1280x672.mp4" type="video/mp4">
                 Tu navegador no admite reproducción de vídeo HTML5.
               </video>
             </div>
             <div class="bento-card bento-card-4">
-              <img src="img/hero-bento-4.webp" alt="Papelería corporativa y soportes para empresas del Baix Llobregat" width="400" height="300" loading="eager" decoding="async">
+              <img src="img/hero-bento-4.webp" alt="Papelería corporativa y soportes para empresas del Baix Llobregat" width="400" height="300" loading="lazy" decoding="async">
             </div>
             <div class="bento-card bento-card-6">
-              <img src="img/hero-bento-6.webp" alt="Impresión de carteles en gran formato en Sant Just Desvern" width="400" height="300" loading="eager" decoding="async">
+              <img src="img/hero-bento-6.webp" alt="Impresión de carteles en gran formato en Sant Just Desvern" width="400" height="300" loading="lazy" decoding="async">
             </div>
             <div class="bento-card bento-card-8">
-              <img src="img/hero-bento-8.webp" alt="Expositores visuales y roll-ups para eventos en Barcelona" width="400" height="300" loading="eager" decoding="async">
+              <img src="img/hero-bento-8.webp" alt="Expositores visuales y roll-ups para eventos en Barcelona" width="400" height="300" loading="lazy" decoding="async">
             </div>
         <!-- Set 2 lo genera script.js clonando este track (reduce DOM inicial) -->
           </div>
@@ -178,7 +247,7 @@
   </section>
 
   <!-- ===== IMPRESION ONLINE ===== -->
-  <section class="print-order" id="imprimir">
+  <section class="print-order" id="imprimir" tabindex="-1">
     <div class="order-image" id="mockup-container" aria-label="Vista previa interactiva de impresión">
       <div class="mockup-stage">
         <!-- Folio A4 (Document Preview Sheet) -->
@@ -277,6 +346,11 @@
         <input type="file" id="file-input" hidden accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
         <label for="file-input" class="sr-only">Subir archivo para imprimir en A4</label>
 
+        <!-- Indicador de archivo seleccionado y botón de retirada -->
+        <div id="file-info-container" class="file-info-bar" hidden>
+          <span id="file-name" class="file-name-text" aria-live="polite">Ningún archivo seleccionado</span>
+          <button type="button" id="remove-file-btn" class="file-remove-btn" aria-label="Eliminar archivo seleccionado">×</button>
+        </div>
 
         <!-- Banner de Error Inline -->
         <div id="form-error-msg" class="form-error-banner" hidden role="alert" aria-live="polite"></div>
@@ -296,7 +370,7 @@
   </section>
 
   <!-- ===== SECCIÓN DE CONTACTO ===== -->
-  <section id="contacto" class="contact-section">
+  <section id="contacto" class="contact-section" tabindex="-1">
     <div class="contact-container">
       <!-- Columna 1: Datos de Contacto y Taller -->
       <div class="contact-col contact-info">
@@ -351,6 +425,9 @@
           <label for="contact-message">Consulta o proyecto</label>
           <textarea id="contact-message" name="message" rows="4" placeholder="Cuéntanos qué necesitas imprimir o en qué podemos ayudarte..." required></textarea>
 
+          <!-- Banner de Error Inline para formulario de contacto -->
+          <div id="contact-error-msg" class="form-error-banner" hidden role="alert" aria-live="polite"></div>
+
           <button type="submit" id="contact-submit-btn" class="btn btn-solid">Enviar mensaje</button>
           <p id="contact-feedback" class="contact-feedback" hidden role="status" aria-live="polite">¡Gracias por escribirnos! Hemos recibido tu mensaje y te responderemos lo antes posible.</p>
         </form>
@@ -359,9 +436,7 @@
   </section>
 
   <!-- ===== TESTIMONIOS Y OPINIONES ===== -->
-  <section class="testimonials" id="opiniones">
-    <h2 class="sr-only">Opiniones de nuestros clientes en Sant Just Desvern</h2>
-
+  <section class="testimonials" id="opiniones" tabindex="-1">
     <!-- Tira decorativa de imprenta -->
     <div class="print-strip print-strip-bottom" aria-hidden="true">
       <span class="crop-mark crop-mark-left"></span>
@@ -369,6 +444,11 @@
       <div class="registration-target"></div>
       <div class="cmyk-swatch"><i></i><i></i><i></i><i></i></div>
       <span class="crop-mark crop-mark-right"></span>
+    </div>
+
+    <div class="section-header text-center">
+      <h2 class="section-title">Lo que opinan quienes imprimen con nosotros</h2>
+      <p class="section-subtitle">Vecinos, profesionales y empresas de Sant Just Desvern y Barcelona que confían en nuestro taller.</p>
     </div>
 
     <!-- Opiniones -->
@@ -415,7 +495,7 @@
 
 <!-- ===== FOOTER ===== -->
 <footer class="site-footer">
-  <div class="footer-text" id="quienes-somos">
+  <div class="footer-text" id="quienes-somos" tabindex="-1">
     <h2 class="footer-heading">Print2Web · Imprenta Digital en Sant Just Desvern</h2>
     <p>Print2Web es la imprenta digital online de Tramas Solucions Gràfiques SL, ofreciendo servicios de impresión online en Sant Just Desvern, Barcelona y la comarca del Baix Llobregat.<br>Taller propio en Carretera Reial, 15-17. Impresión digital y diseño gráfico desde 2008.</p>
 
@@ -590,9 +670,7 @@
   </div>
 </div>
 
-<!-- PDF.js - cargado con defer para no bloquear el renderizado inicial -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
-<!-- Carga del script con defer -->
+<!-- Carga del script principal con defer (PDF.js se carga bajo demanda al seleccionar un PDF) -->
 <script src="script.js" defer></script>
 </body>
 </html>
