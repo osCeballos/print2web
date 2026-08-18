@@ -77,9 +77,9 @@ function calcularTotal(campos) {
 }
 
 /**
- * Inspecciona los Magic Bytes y firma binaria para verificar la validez del archivo.
+ * Inspecciona los Magic Bytes y firma binaria para verificar la autenticidad del archivo.
  */
-function validarMagicBytesYContenidoNativo(filepath, originalFilename) {
+function validarMagicBytes(filepath) {
     const bufferHeader = Buffer.alloc(12);
     const fd = fs.openSync(filepath, 'r');
     fs.readSync(fd, bufferHeader, 0, 12, 0);
@@ -97,17 +97,6 @@ function validarMagicBytesYContenidoNativo(filepath, originalFilename) {
 
     if (!esPDF && !esPNG && !esJPEG) {
         throw new Error('Formato de archivo no permitido. Solo se aceptan documentos PDF o imágenes PNG/JPEG auténticas.');
-    }
-
-    // Si es PDF, escanear el contenido completo en busca de scripts embebidos maliciosos
-    if (esPDF) {
-        const content = fs.readFileSync(filepath, { encoding: 'utf8', flag: 'r' });
-        const suspiciousTokens = ['/JS', '/JavaScript', '/AA', '/OpenAction', '/Launch'];
-        for (const token of suspiciousTokens) {
-            if (content.includes(token)) {
-                throw new Error('El archivo PDF contiene elementos o scripts no permitidos por motivos de seguridad.');
-            }
-        }
     }
 
     return true;
@@ -203,8 +192,12 @@ async function handler(req, res) {
                 return res.status(400).json({ error: 'No se adjuntó ningún documento válido.' });
             }
 
-            // 2. Validación Robusta de Magic Bytes y Scripts Maliciosos en el Archivo (Nativo)
-            validarMagicBytesYContenidoNativo(file.filepath, file.originalFilename);
+            // 2. Validación de Magic Bytes (PDF, PNG, JPG auténticos)
+            try {
+                validarMagicBytes(file.filepath);
+            } catch (validationErr) {
+                return res.status(400).json({ error: validationErr.message });
+            }
 
             // 3. Subir a Vercel Blob de forma PRIVADA (access: 'private')
             const safeName = sanitizarNombreArchivo(file.originalFilename);
@@ -278,7 +271,7 @@ async function handler(req, res) {
 
         } catch (error) {
             console.error('Error procesando checkout [Server Log]:', error.message || error);
-            return res.status(500).json({ error: 'Ocurrió un error al procesar el pago. Por favor verifique sus datos e intente nuevamente.' });
+            return res.status(500).json({ error: 'Ocurrió un error al procesar el pago en el servidor. Por favor verifique sus datos e intente nuevamente.' });
         }
     });
 }
