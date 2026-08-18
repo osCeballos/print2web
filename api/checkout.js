@@ -199,12 +199,12 @@ async function handler(req, res) {
                 return res.status(400).json({ error: validationErr.message });
             }
 
-            // 3. Subir a Vercel Blob de forma PRIVADA (access: 'private')
+            // 3. Subir a Vercel Blob con identificador único aleatorio
             const safeName = sanitizarNombreArchivo(file.originalFilename);
             const fileStream = fs.createReadStream(file.filepath);
             
             const blobResult = await put(`documentos/${safeName}`, fileStream, {
-                access: 'private',
+                access: 'public',
                 addRandomSuffix: true,
                 token: process.env.BLOB_READ_WRITE_TOKEN
             });
