@@ -2,8 +2,8 @@
     'use strict';
 
     // JSON-LD LocalBusiness/PrintShop declarado estáticamente en el <head> de index.html
-    // (Movido de inyecciÃ³n dinÃ¡mica a HTML estático para compatibilidad total con crawlers
-    //  estáticos, Search Console Rich Results Test y Googlebot sin render JS â€” SEO audit P3)
+    // (Movido de inyección dinámica a HTML estático para compatibilidad total con crawlers
+    //  estáticos, Search Console Rich Results Test y Googlebot sin render JS — SEO audit P3)
 
     let currentOrderId = null;
 
@@ -33,7 +33,7 @@
     }
 
     // ----------------------------------------------------------------
-    // Referencias DOM principales del formulario de impresiÃ³n y contacto
+    // Referencias DOM principales del formulario de impresión y contacto
     // ----------------------------------------------------------------
     const form = document.getElementById('print-form');
     const numPaginas = document.getElementById('num-paginas');
@@ -97,7 +97,7 @@
     const custCp = document.getElementById('cust-cp');
     const custCity = document.getElementById('cust-city');
 
-    // MÃ©todos de Pago (Manejado 100% por pasarela segura Stripe Checkout)
+    // Métodos de Pago (Manejado 100% por pasarela segura Stripe Checkout)
     const orderCodeDisplay = document.getElementById('order-code-display');
 
     const orderReceiptSummary = document.getElementById('order-receipt-summary');
@@ -111,7 +111,7 @@
     let selectedPaymentMethod = 'bizum';
     let currentOrderData = null;
 
-    // Carga dinÃ¡mica bajo demanda de PDF.js (0 bytes y 0 tiempo de parseo en carga inicial)
+    // Carga dinámica bajo demanda de PDF.js (0 bytes y 0 tiempo de parseo en carga inicial)
     let pdfJsLoadingPromise = null;
     function cargarPdfJsEnDemanda() {
         if (window.pdfjsLib) {
@@ -145,7 +145,7 @@
     const PRECIO_ENVIO = 5.00;
 
     // ----------------------------------------------------------------
-    // CÃ¡lculo DinÃ¡mico de Total
+    // Cálculo Dinámico de Total
     // ----------------------------------------------------------------
     function calcularTotal() {
         if (!numPaginas || !modoColor) return 0;
@@ -162,7 +162,7 @@
         let costoEnvio = 0;
         const esRecogidaEnTienda = (deliveryOptionRecogida && deliveryOptionRecogida.checked);
         
-        // Si no está seleccionada recogida presencial y el envÃ­o a domicilio está activo
+        // Si no está seleccionada recogida presencial y el envío a domicilio está activo
         if (!esRecogidaEnTienda && envio && envio.checked) {
             costoEnvio = PRECIO_ENVIO;
         }
@@ -177,7 +177,7 @@
             totalAmountSpan.textContent = total.toFixed(2);
         }
         if (modalCheckoutTotal) {
-            modalCheckoutTotal.textContent = total.toFixed(2) + ' â‚¬';
+            modalCheckoutTotal.textContent = total.toFixed(2) + ' €';
         }
     }
 
@@ -213,7 +213,7 @@
     }
 
     // ----------------------------------------------------------------
-    // ActualizaciÃ³n visual del Mockup A4
+    // Actualización visual del Mockup A4
     // ----------------------------------------------------------------
     function actualizarOrientacionMockup() {
         if (!mockupSheet) return;
@@ -262,7 +262,7 @@
         if (!mockupDocPages) return;
         const numP = numPaginas ? Math.max(1, parseInt(numPaginas.value, 10) || 1) : 1;
         const copias = numCopias ? Math.max(1, parseInt(numCopias.value, 10) || 1) : 1;
-        mockupDocPages.textContent = `${numP} pÃ¡g${numP > 1 ? 's' : ''} (${copias} copia${copias > 1 ? 's' : ''})`;
+        mockupDocPages.textContent = `${numP} pág${numP > 1 ? 's' : ''} (${copias} copia${copias > 1 ? 's' : ''})`;
     }
 
     function renderizarPagina1PDF(file) {
@@ -339,7 +339,7 @@
             fileNameSpan.textContent = files[0].name;
             fileInfoContainer.hidden = false;
         } else {
-            fileNameSpan.textContent = 'NingÃºn archivo seleccionado';
+            fileNameSpan.textContent = 'Ningún archivo seleccionado';
             fileInfoContainer.hidden = true;
         }
     }
@@ -411,7 +411,7 @@
     }
 
     // ----------------------------------------------------------------
-    // ValidaciÃ³n previa al pedido
+    // Validación previa al pedido
     // ----------------------------------------------------------------
     let lastFocusedElement = null;
 
@@ -426,7 +426,7 @@
     }
 
     // ----------------------------------------------------------------
-    // ValidaciÃ³n previa al pedido y gestiÃ³n accesible de errores
+    // Validación previa al pedido y gestión accesible de errores
     // ----------------------------------------------------------------
     function mostrarErrorFormulario(mensaje, targetInput) {
         if (!formErrorMsg) return;
@@ -456,7 +456,7 @@
         }
     }
 
-    // GestiÃ³n accesible e independiente de errores del formulario de contacto
+    // Gestión accesible e independiente de errores del formulario de contacto
     function mostrarErrorContacto(mensaje, targetInput) {
         if (!contactErrorMsg) return;
         contactErrorMsg.textContent = mensaje;
@@ -515,19 +515,19 @@
 
     function validarFormularioPrincipal() {
         if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-            mostrarErrorFormulario('âš ï¸ Por favor, selecciona o arrastra tu archivo A4 antes de continuar.', addFileBtn);
+            mostrarErrorFormulario('⚠️ Por favor, selecciona o arrastra tu archivo A4 antes de continuar.', addFileBtn);
             return false;
         }
 
         const numP = parseInt(numPaginas ? numPaginas.value : '1', 10);
         if (isNaN(numP) || numP < 1) {
-            mostrarErrorFormulario('âš ï¸ El nÃºmero de pÃ¡ginas debe ser al menos 1.', numPaginas);
+            mostrarErrorFormulario('⚠️ El número de páginas debe ser al menos 1.', numPaginas);
             return false;
         }
 
         const numC = parseInt(numCopias ? numCopias.value : '1', 10);
         if (isNaN(numC) || numC < 1) {
-            mostrarErrorFormulario('âš ï¸ El nÃºmero de copias debe ser al menos 1.', numCopias);
+            mostrarErrorFormulario('⚠️ El número de copias debe ser al menos 1.', numCopias);
             return false;
         }
 
@@ -548,7 +548,7 @@
         if (checkoutStep3) checkoutStep3.classList.add('is-hidden');
         if (checkoutStep4) checkoutStep4.classList.add('is-hidden');
 
-        // Actualizar pestaÃ±as indicadoras
+        // Actualizar pestañas indicadoras
         if (stepTab1) {
             stepTab1.classList.toggle('active', paso === 1);
             if (paso === 1) stepTab1.setAttribute('aria-current', 'step'); else stepTab1.removeAttribute('aria-current');
@@ -568,7 +568,7 @@
             if (modalPrevBtn) modalPrevBtn.classList.add('is-hidden');
             if (modalNextBtn) {
                 modalNextBtn.classList.remove('is-hidden');
-                modalNextBtn.textContent = 'Continuar a Datos & Entrega â†’';
+                modalNextBtn.textContent = 'Continuar a Datos & Entrega →';
             }
             if (confirmPayBtn) confirmPayBtn.classList.add('is-hidden');
             renderizarResumenPaso1();
@@ -577,7 +577,7 @@
             if (modalPrevBtn) modalPrevBtn.classList.remove('is-hidden');
             if (modalNextBtn) {
                 modalNextBtn.classList.remove('is-hidden');
-                modalNextBtn.textContent = 'Continuar al Pago â†’';
+                modalNextBtn.textContent = 'Continuar al Pago →';
             }
             if (confirmPayBtn) confirmPayBtn.classList.add('is-hidden');
         } else if (paso === 3) {
@@ -588,7 +588,7 @@
             if (confirmPayBtn) confirmPayBtn.classList.remove('is-hidden');
             actualizarTotal();
         } else if (paso === 4) {
-            // Paso Ã‰xito
+            // Paso Éxito
             if (checkoutStep4) checkoutStep4.classList.remove('is-hidden');
             if (modalPrevBtn) modalPrevBtn.classList.add('is-hidden');
             if (modalNextBtn) modalNextBtn.classList.add('is-hidden');
@@ -597,7 +597,7 @@
 
         trapFocus(modal);
 
-        // Mover foco al encabezado del paso activo para navegación por teclado idÃ³nea (WCAG 2.4.3)
+        // Mover foco al encabezado del paso activo para navegación por teclado idónea (WCAG 2.4.3)
         const activeStepTitle = document.getElementById(`step-title-${paso}`);
         if (activeStepTitle) {
             activeStepTitle.focus();
@@ -609,24 +609,24 @@
         const total = calcularTotal();
         const numP = numPaginas ? numPaginas.value : 1;
         const copias = numCopias ? numCopias.value : 1;
-        const color = (modoColor && modoColor.value === 'color') ? 'Color (0,50â‚¬/pÃ¡g)' : 'Blanco y negro (0,30â‚¬/pÃ¡g)';
+        const color = (modoColor && modoColor.value === 'color') ? 'Color (0,50€/pág)' : 'Blanco y negro (0,30€/pág)';
         const diapo = (modoDiapositiva && modoDiapositiva.value === 'simple') ? 'Una cara (Simple)' : 'Dos caras (Doble)';
-        const enc = (encuadernado && encuadernado.checked) ? `SÃ­ (+${(PRECIO_ENCUADERNACION * copias).toFixed(2)}â‚¬)` : 'No';
-        const envText = (envio && envio.checked) ? 'EnvÃ­o a domicilio (+5,00â‚¬)' : 'Recogida presencial gratuita';
+        const enc = (encuadernado && encuadernado.checked) ? `Sí (+${(PRECIO_ENCUADERNACION * copias).toFixed(2)}€)` : 'No';
+        const envText = (envio && envio.checked) ? 'Envío a domicilio (+5,00€)' : 'Recogida presencial gratuita';
         const fileName = (fileInput && fileInput.files && fileInput.files.length > 0) ? fileInput.files[0].name : 'Documento';
 
-        // ConstrucciÃ³n segura del DOM sin interpolaciÃ³n no confiable en innerHTML (SEC-01)
+        // Construcción segura del DOM sin interpolación no confiable en innerHTML (SEC-01)
         modalDetailSummary.textContent = '';
 
         const items = [
             { label: 'Archivo adjunto:', value: fileName },
             { label: 'Formato de papel:', value: 'A4 estándar (210 x 297 mm)' },
-            { label: 'PÃ¡ginas por ejemplar:', value: `${numP} pÃ¡g${numP > 1 ? 's' : ''}` },
+            { label: 'Páginas por ejemplar:', value: `${numP} pág${numP > 1 ? 's' : ''}` },
             { label: 'Ejemplares (Copias):', value: `${copias}` },
             { label: 'Modo de color:', value: color },
-            { label: 'Caras de impresiÃ³n:', value: diapo },
-            { label: 'EncuadernaciÃ³n espiral:', value: enc },
-            { label: 'OpciÃ³n de entrega actual:', value: envText }
+            { label: 'Caras de impresión:', value: diapo },
+            { label: 'Encuadernación espiral:', value: enc },
+            { label: 'Opción de entrega actual:', value: envText }
         ];
 
         items.forEach(function(item) {
@@ -650,19 +650,19 @@
 
         const totalSpan = document.createElement('span');
         totalSpan.className = 'modal-summary-total-amount';
-        totalSpan.textContent = `${total.toFixed(2)} â‚¬`;
+        totalSpan.textContent = `${total.toFixed(2)} €`;
         totalP.appendChild(totalSpan);
 
         modalDetailSummary.appendChild(totalP);
     }
 
-    // Modalidad de Entrega (EnvÃ­o vs Recogida)
+    // Modalidad de Entrega (Envío vs Recogida)
     function actualizarOpcionesEntregaUI() {
         const esEnvio = deliveryOptionEnvio && deliveryOptionEnvio.checked;
         if (shippingAddressFields) {
             shippingAddressFields.style.display = esEnvio ? 'grid' : 'none';
         }
-        // Marcar o desmarcar la casilla principal de envÃ­o
+        // Marcar o desmarcar la casilla principal de envío
         if (envio) {
             envio.checked = esEnvio;
         }
@@ -676,30 +676,30 @@
     // Validar Paso 2 (Datos de Cliente y Entrega)
     function validarPaso2() {
         if (!custName || !custName.value.trim()) {
-            mostrarErrorModal('âš ï¸ Por favor, ingresa tu Nombre y Apellidos.', custName);
+            mostrarErrorModal('⚠️ Por favor, ingresa tu Nombre y Apellidos.', custName);
             return false;
         }
         if (!custEmail || !custEmail.value.trim() || !custEmail.value.includes('@')) {
-            mostrarErrorModal('âš ï¸ Por favor, ingresa un correo electrÃ³nico vÃ¡lido.', custEmail);
+            mostrarErrorModal('⚠️ Por favor, ingresa un correo electrónico válido.', custEmail);
             return false;
         }
         if (!custPhone || !custPhone.value.trim()) {
-            mostrarErrorModal('âš ï¸ Por favor, ingresa un nÃºmero de telÃ©fono de contacto.', custPhone);
+            mostrarErrorModal('⚠️ Por favor, ingresa un número de teléfono de contacto.', custPhone);
             return false;
         }
 
         const esEnvio = deliveryOptionEnvio && deliveryOptionEnvio.checked;
         if (esEnvio) {
             if (!custAddress || !custAddress.value.trim()) {
-                mostrarErrorModal('âš ï¸ Por favor, ingresa tu direcciÃ³n de envÃ­o.', custAddress);
+                mostrarErrorModal('⚠️ Por favor, ingresa tu dirección de envío.', custAddress);
                 return false;
             }
             if (!custCp || !custCp.value.trim()) {
-                mostrarErrorModal('âš ï¸ Por favor, ingresa el cÃ³digo postal.', custCp);
+                mostrarErrorModal('⚠️ Por favor, ingresa el código postal.', custCp);
                 return false;
             }
             if (!custCity || !custCity.value.trim()) {
-                mostrarErrorModal('âš ï¸ Por favor, ingresa la ciudad / poblaciÃ³n.', custCity);
+                mostrarErrorModal('⚠️ Por favor, ingresa la ciudad / población.', custCity);
                 return false;
             }
         }
@@ -727,7 +727,7 @@
         });
     }
 
-    // FinalizaciÃ³n del Pedido y RedirecciÃ³n a Stripe Checkout
+    // Finalización del Pedido y Redirección a Stripe Checkout
     if (confirmPayBtn) {
         confirmPayBtn.addEventListener('click', async function() {
             const originalText = confirmPayBtn.innerHTML;
@@ -742,11 +742,11 @@
                     throw new Error("Falta el documento adjunto.");
                 }
 
-                // LÃ­mite mÃ¡ximo de carga directa (4.4 MB)
+                // Límite máximo de carga directa (4.4 MB)
                 const maxServerlessBytes = 4.4 * 1024 * 1024;
                 if (selectedFile.size > maxServerlessBytes) {
                     const mbSize = (selectedFile.size / (1024 * 1024)).toFixed(1);
-                    throw new Error(`El archivo (${mbSize} MB) supera el tamaÃ±o mÃ¡ximo permitido para subir online (4.4 MB). Por favor comprime el documento o contacta con nosotros en el taller.`);
+                    throw new Error(`El archivo (${mbSize} MB) supera el tamaño máximo permitido para subir online (4.4 MB). Por favor comprime el documento o contacta con nosotros en el taller.`);
                 }
 
                 formData.append('documento', selectedFile);
@@ -784,17 +784,17 @@
                     data = JSON.parse(responseText);
                 } catch (parseErr) {
                     if (response.status === 413) {
-                        throw new Error('El archivo adjunto supera el tamaÃ±o mÃ¡ximo permitido por el servidor serverless (4.5 MB).');
+                        throw new Error('El archivo adjunto supera el tamaño máximo permitido por el servidor serverless (4.5 MB).');
                     }
                     throw new Error(`Error en la respuesta del servidor (Estado ${response.status}).`);
                 }
 
                 if (!response.ok) {
-                    throw new Error(data.error || 'Error de comunicaciÃ³n con el servidor');
+                    throw new Error(data.error || 'Error de comunicación con el servidor');
                 }
 
                 if (!data.url) {
-                    throw new Error('No se recibiÃ³ la URL de redirecciÃ³n a la pasarela de pago.');
+                    throw new Error('No se recibió la URL de redirección a la pasarela de pago.');
                 }
                 
                 // Redirigir a Stripe Checkout
@@ -802,7 +802,7 @@
 
             } catch (error) {
                 console.error(error);
-                mostrarErrorModal('âš ï¸ Error: ' + error.message);
+                mostrarErrorModal('⚠️ Error: ' + error.message);
                 confirmPayBtn.innerHTML = originalText;
                 confirmPayBtn.disabled = false;
             }
@@ -835,7 +835,7 @@
         if (!validarFormularioPrincipal()) return;
         if (!modal) return;
         modal.hidden = false;
-        // Forzar layout para desencadenar la animaciÃ³n
+        // Forzar layout para desencadenar la animación
         void modal.offsetWidth;
         modal.classList.add('is-open');
         irAPasoModal(1);
@@ -854,7 +854,7 @@
             } else if (comprarBtn) {
                 comprarBtn.focus();
             }
-        }, 300); // 300ms debe coincidir con la transiciÃ³n en CSS
+        }, 300); // 300ms debe coincidir con la transición en CSS
     }
 
     function trapFocus(element) {
@@ -901,7 +901,7 @@
     const skipLink = document.querySelector('.skip-link');
 
     // ----------------------------------------------------------------
-    // Control del MenÃº Hamburguesa MÃ³vil (WCAG 4.1.2, 2.1.1 & 2.1.2)
+    // Control del Menú Hamburguesa Móvil (WCAG 4.1.2, 2.1.1 & 2.1.2)
     // ----------------------------------------------------------------
     const menuToggle = document.getElementById('menu-toggle');
     const mainNav = document.getElementById('main-nav');
@@ -913,9 +913,9 @@
             mainNav.classList.toggle('is-open');
             if (siteHeader) siteHeader.classList.remove('header-hidden');
             if (!isExpanded) {
-                announceToScreenReader('MenÃº de navegación abierto');
+                announceToScreenReader('Menú de navegación abierto');
             } else {
-                announceToScreenReader('MenÃº de navegación cerrado');
+                announceToScreenReader('Menú de navegación cerrado');
             }
         });
 
@@ -925,7 +925,7 @@
                 menuToggle.setAttribute('aria-expanded', 'false');
                 mainNav.classList.remove('is-open');
                 menuToggle.focus();
-                announceToScreenReader('MenÃº de navegación cerrado');
+                announceToScreenReader('Menú de navegación cerrado');
             }
         });
     }
@@ -951,7 +951,7 @@
         var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         var scrollBehavior = prefersReduced ? 'auto' : 'smooth';
 
-        // Smooth scroll para todos los enlaces con ancla en la misma pÃ¡gina
+        // Smooth scroll para todos los enlaces con ancla en la misma página
         document.addEventListener('click', function(e) {
             var link = e.target.closest('a');
             if (!link) return;
@@ -962,7 +962,7 @@
             // Dejar pasar el skip-link de accesibilidad (funciona nativamente)
             if (link.classList.contains('skip-link')) return;
 
-            // Solo interceptar enlaces con hash que apunten a secciones de esta pÃ¡gina
+            // Solo interceptar enlaces con hash que apunten a secciones de esta página
             var targetId = null;
 
             if (href.startsWith('#') && href.length > 1) {
@@ -985,7 +985,7 @@
                 history.replaceState(null, '', href);
             }
 
-            // Mover foco a la secciÃ³n para accesibilidad (WCAG 2.4.3)
+            // Mover foco a la sección para accesibilidad (WCAG 2.4.3)
             if (targetId === 'imprimir' && numPaginas) {
                 setTimeout(function() { numPaginas.focus(); }, 350);
             } else {
@@ -1004,7 +1004,7 @@
             var headingForLabel = targetEl.querySelector('h1, h2, h3');
             var sectionLabel = targetEl.getAttribute('aria-label') || (headingForLabel ? headingForLabel.textContent : '');
             if (sectionLabel) {
-                announceToScreenReader('SecciÃ³n: ' + sectionLabel);
+                announceToScreenReader('Sección: ' + sectionLabel);
             }
 
             // Actualizar enlace activo del nav
@@ -1017,7 +1017,7 @@
             }
         });
 
-        // ScrollSpy: actualiza el enlace activo del nav segÃºn la secciÃ³n visible
+        // ScrollSpy: actualiza el enlace activo del nav según la sección visible
         if ('IntersectionObserver' in window) {
             var spyOptions = { root: null, rootMargin: '-20% 0px -60% 0px', threshold: 0 };
 
@@ -1047,7 +1047,7 @@
             }
         }
 
-        // Si hay hash en la URL al cargar (ej. desde /#imprimir), scroll a la secciÃ³n
+        // Si hay hash en la URL al cargar (ej. desde /#imprimir), scroll a la sección
         if (window.location.hash && window.location.hash.length > 1) {
             var initialTarget = document.getElementById(window.location.hash.substring(1));
             if (initialTarget) {
@@ -1103,7 +1103,7 @@
             siteHeader.classList.remove('is-scrolled');
         }
 
-        // Si estamos cerca de la parte superior de la pÃ¡gina, mostrar siempre
+        // Si estamos cerca de la parte superior de la página, mostrar siempre
         if (currentScrollY <= hideThreshold) {
             siteHeader.classList.remove('header-hidden');
             lastScrollY = currentScrollY;
@@ -1111,7 +1111,7 @@
             return;
         }
 
-        // Si hay una excepciÃ³n activa (foco teclado, menú móvil abierto, modal), no ocultar
+        // Si hay una excepción activa (foco teclado, menú móvil abierto, modal), no ocultar
         if (isHeaderExemptFromHiding()) {
             siteHeader.classList.remove('header-hidden');
             lastScrollY = currentScrollY;
@@ -1141,7 +1141,7 @@
         }
     }
 
-    // Escucha pasiva para mÃ¡ximo rendimiento de scroll a 60/120fps
+    // Escucha pasiva para máximo rendimiento de scroll a 60/120fps
     window.addEventListener('scroll', onScroll, { passive: true });
 
     // Accesibilidad por teclado (WCAG 2.2 Focus Visible & Operable)
@@ -1161,7 +1161,7 @@
     }
 
     // ----------------------------------------------------------------
-    // AsignaciÃ³n de Event Listeners
+    // Asignación de Event Listeners
     // ----------------------------------------------------------------
     if (form) {
         form.addEventListener('submit', function(e) {
@@ -1266,15 +1266,15 @@
             const contactMessage = document.getElementById('contact-message');
 
             if (contactName && !contactName.value.trim()) {
-                mostrarErrorContacto('âš ï¸ Por favor, ingresa tu nombre.', contactName);
+                mostrarErrorContacto('⚠️ Por favor, ingresa tu nombre.', contactName);
                 return;
             }
             if (contactEmail && (!contactEmail.value.trim() || !contactEmail.value.includes('@'))) {
-                mostrarErrorContacto('âš ï¸ Por favor, ingresa un correo electrÃ³nico vÃ¡lido.', contactEmail);
+                mostrarErrorContacto('⚠️ Por favor, ingresa un correo electrónico válido.', contactEmail);
                 return;
             }
             if (contactMessage && !contactMessage.value.trim()) {
-                mostrarErrorContacto('âš ï¸ Por favor, escribe tu consulta o mensaje.', contactMessage);
+                mostrarErrorContacto('⚠️ Por favor, escribe tu consulta o mensaje.', contactMessage);
                 return;
             }
 
@@ -1293,7 +1293,7 @@
     }
 
     // ----------------------------------------------------------------
-    // Bento Grid - duplicar tracks para bucle infinito vÃ­a JS
+    // Bento Grid - duplicar tracks para bucle infinito vía JS
     // ----------------------------------------------------------------
     document.querySelectorAll('.bento-track').forEach(function(track) {
         var clone = track.cloneNode(true);
@@ -1307,7 +1307,7 @@
             video.preload = 'none';
             video.autoplay = false;
             video.pause();
-            // Evitar que el clon inicie peticiones de red adicionales de vÃ­deo
+            // Evitar que el clon inicie peticiones de red adicionales de vídeo
             Array.from(video.querySelectorAll('source')).forEach(function(src) {
                 src.removeAttribute('src');
             });
@@ -1318,7 +1318,7 @@
         track.parentElement.appendChild(clone);
     });
 
-    // GestiÃ³n accesible y dinÃ¡mica de vÃ­deos con movimiento reducido (WCAG 2.2.2)
+    // Gestión accesible y dinámica de vídeos con movimiento reducido (WCAG 2.2.2)
     function sincronizarPreferenciaMovimiento() {
         const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         document.querySelectorAll('video.bento-video').forEach(function(vid) {
@@ -1341,7 +1341,7 @@
     }
 
     // ----------------------------------------------------------------
-    // Carga diferida bajo demanda de Stripe.js (GarantÃ­a de 0 cookies no esenciales en carga inicial)
+    // Carga diferida bajo demanda de Stripe.js (Garantía de 0 cookies no esenciales en carga inicial)
     // ----------------------------------------------------------------
     let stripeScriptCargado = false;
     function cargarStripeJsEnDemanda() {
@@ -1355,16 +1355,16 @@
             script.async = true;
             script.onload = function() {
                 stripeScriptCargado = true;
-                console.log('Stripe.js cargado dinÃ¡micamente para el paso de pago seguro.');
+                console.log('Stripe.js cargado dinámicamente para el paso de pago seguro.');
             };
             document.head.appendChild(script);
         } catch (e) {
-            console.warn('No se pudo cargar Stripe.js dinÃ¡micamente:', e);
+            console.warn('No se pudo cargar Stripe.js dinámicamente:', e);
         }
     }
 
     // ----------------------------------------------------------------
-    // InicializaciÃ³n del Banner de Cookies Accesible (role="region", no modal)
+    // Inicialización del Banner de Cookies Accesible (role="region", no modal)
     // ----------------------------------------------------------------
     function inicializarBannerCookies() {
         const cookieBanner = document.getElementById('cookie-banner');
