@@ -244,31 +244,6 @@ picture{ display: contents; }
   height: 24px;
 }
 
-.header-icons{
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-/* Áreas de interacción accesibles (min 44x44px según WCAG 2.5.5) */
-.icon-btn{
-  background: none;
-  border: none;
-  color: var(--white);
-  width: 44px;
-  height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  border-radius: 50%;
-  transition: background 0.2s ease;
-}
-.icon-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-.icon-btn svg{ width: 22px; height: 22px; }
-
 /* =========================================================
    HERO
    ========================================================= */
@@ -1151,14 +1126,16 @@ picture{ display: contents; }
   color: var(--black);
   border-radius: var(--radius);
   border: 1px solid var(--gray-200);
-  max-width: 480px;
+  max-width: none;
   width: 100%;
   padding: 32px 40px;
+  margin: 0;
   box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 10px 15px -3px rgba(0,0,0,0.1), 0 25px 50px -12px rgba(0,0,0,0.15);
   position: relative;
   transform: translateY(20px) scale(0.98);
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+
 .modal-overlay.is-open .modal-card {
   transform: translateY(0) scale(1);
 }
@@ -1171,8 +1148,24 @@ picture{ display: contents; }
 }
 
 .modal-card-wide {
-  max-width: 640px;
-  width: 95%;
+  max-width: none;
+  width: 100%;
+  margin: 0;
+}
+
+/* Mobile full-screen modal */
+  @media (max-width: 600px) {
+    .modal-overlay {
+      padding: 0;
+    }
+    .modal-card, .modal-card-wide {
+      max-width: none;
+      width: 100%;
+      margin: 0;
+      max-height: 100vh;
+      height: 100vh;
+    }
+  }
   max-height: 90vh;
   display: flex;
   flex-direction: column;
